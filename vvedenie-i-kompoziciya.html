@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Введение и композиция</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Unbounded:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Учебник-конспект: узкая колонка текста + липкое оглавление слева; демо в рамках «лабораторного стола» */
+:root{
+  --paper:#f5f6f8; --card:#ffffff; --ink:#15181d; --muted:#596170; --line:#dde2e8;
+  --accent:#2f56e0; --tint:#e9eefd; --bad:#c43d2c; --badt:#fbe9e6; --good:#1d7f55; --goodt:#e3f3ea;
+  --demo:#eceff3;
+  --f-display:"Unbounded", "Golos Text", system-ui, sans-serif;
+  --f-body:"Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#111419; --card:#191d24; --ink:#e7eaef; --muted:#9aa3b1; --line:#2a303a;
+    --accent:#86a0ff; --tint:#1d2538; --bad:#ff7d6a; --badt:#3a201c; --good:#55c690; --goodt:#16302a;
+    --demo:#20252e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#111419; --card:#191d24; --ink:#e7eaef; --muted:#9aa3b1; --line:#2a303a;
+  --accent:#86a0ff; --tint:#1d2538; --bad:#ff7d6a; --badt:#3a201c; --good:#55c690; --goodt:#16302a;
+  --demo:#20252e; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 var(--f-body)}
+a{color:var(--accent)}
+h1,h2,h3,h4{text-wrap:balance;line-height:1.2;margin:0}
+h1{font:700 clamp(28px,4.2vw,42px)/1.12 var(--f-display);letter-spacing:-.01em}
+h2{font:700 clamp(22px,3vw,30px)/1.2 var(--f-display);margin-top:8px}
+h3{font-size:22px;font-weight:700;margin-top:48px}
+h4{font-size:17px;font-weight:700;margin-top:24px}
+p,ul,ol{margin:12px 0}
+li{margin:6px 0}
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:48px;max-width:1180px;margin:0 auto;padding:32px 24px 80px}
+nav.toc{position:sticky;top:20px;align-self:start;font-size:14px;max-height:calc(100vh - 40px);overflow:auto}
+nav.toc b{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:18px 0 6px}
+nav.toc a{display:block;color:var(--ink);text-decoration:none;padding:4px 8px;border-radius:6px}
+nav.toc a:hover{background:var(--tint)}
+nav.toc .prog{font-family:var(--f-mono);font-size:12px;color:var(--muted);padding:0 8px}
+main{max-width:760px}
+header.top{margin-bottom:24px}
+.kicker{font-size:13px;color:var(--muted);letter-spacing:.04em}
+.lead{font-size:19px;color:var(--muted);max-width:62ch}
+.chapter{border-top:2px solid var(--ink);padding-top:24px;margin-top:56px}
+.chapter-num{font:600 13px var(--f-mono);color:var(--accent)}
+.topic{scroll-margin-top:16px}
+.rule{background:var(--tint);border-left:4px solid var(--accent);padding:16px 20px;border-radius:0 10px 10px 0;margin:20px 0;font-weight:500}
+.rule small{display:block;font:600 12px var(--f-mono);color:var(--accent);margin-bottom:6px;letter-spacing:.04em}
+.label{font:600 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:28px 0 4px;display:block}
+.note{font-size:15px;color:var(--muted);border:1px dashed var(--line);border-radius:10px;padding:12px 16px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin:16px 0}
+.demo{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:20px 0}
+.demo-title{font-weight:700;margin-bottom:4px}
+.demo-sub{font-size:14px;color:var(--muted);margin:0 0 14px}
+.controls{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;margin:14px 0 4px;font-size:15px}
+.controls label{display:flex;align-items:center;gap:8px}
+.controls input[type=range]{width:160px;accent-color:var(--accent)}
+.mono{font-family:var(--f-mono);font-size:13px}
+.verdict{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:15px}
+.verdict.good{background:var(--goodt);color:var(--good)}
+.verdict.bad{background:var(--badt);color:var(--bad)}
+.verdict.mid{background:var(--tint);color:var(--accent)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tag{display:inline-block;font:600 12px var(--f-mono);padding:2px 8px;border-radius:99px;margin-bottom:8px}
+.tag.bad{background:var(--badt);color:var(--bad)}
+.tag.good{background:var(--goodt);color:var(--good)}
+.stage{background:var(--demo);border-radius:10px;padding:16px;overflow:hidden}
+button{font:inherit}
+.btn{font:600 15px var(--f-body);background:var(--accent);color:#fff;border:0;border-radius:8px;padding:9px 16px;cursor:pointer}
+:root[data-theme="dark"] .btn{color:#0d1220}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn{color:#0d1220}}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.btn:focus-visible,.opt:focus-visible,input:focus-visible,nav a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.opt{font:500 15px var(--f-body);background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 12px;cursor:pointer;text-align:left}
+.opt:hover{border-color:var(--accent)}
+.opt.right{background:var(--goodt);border-color:var(--good);color:var(--good)}
+.opt.wrong{background:var(--badt);border-color:var(--bad);color:var(--bad)}
+.opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.mistakes li::marker{color:var(--bad)}
+.figma{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:16px 0}
+.figma ol{padding-left:22px}
+.practice{background:var(--card);border:2px solid var(--ink);border-radius:12px;padding:16px 20px;margin:20px 0}
+.practice label{display:flex;gap:10px;align-items:flex-start;padding:6px 0;cursor:pointer}
+.practice input{margin-top:5px;width:18px;height:18px;accent-color:var(--good);flex:none}
+.practice .count{font:600 13px var(--f-mono);color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:15px}
+.tablewrap{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{font-size:13px;color:var(--muted);font-weight:600}
+tr:last-child td{border-bottom:0}
+.quiz-item{border-top:1px solid var(--line);padding:14px 0}
+.quiz-item:first-child{border-top:0}
+.explain{font-size:15px;margin-top:8px;color:var(--muted)}
+/* демо: постер */
+.poster-wrap{display:flex;justify-content:center;min-height:300px;align-items:center}
+.poster{width:240px;height:300px;border-radius:6px;position:relative;overflow:hidden;font-family:var(--f-body)}
+.poster.a{background:linear-gradient(160deg,#ffcf6b,#ff6fa1 45%,#7b5cff);color:#fff}
+.poster.a .t{position:absolute;left:14px;top:18px;font:700 34px/0.95 var(--f-display);color:rgba(255,255,255,.92);transform:rotate(-6deg)}
+.poster.a .d{position:absolute;right:10px;bottom:52px;font-size:10px;color:rgba(255,255,255,.75);text-align:right;line-height:1.3}
+.poster.a .c{position:absolute;left:16px;bottom:16px;font-size:9px;color:rgba(255,255,255,.7)}
+.poster.a .shape{position:absolute;width:170px;height:170px;border-radius:50%;border:14px solid rgba(255,255,255,.35);right:-40px;top:70px}
+.poster.b{background:#1b1f2a;color:#fff;padding:18px;display:flex;flex-direction:column}
+.poster.b .t{font:700 26px/1 var(--f-display)}
+.poster.b .s{font-size:12px;opacity:.75;margin-top:6px}
+.poster.b .big{margin-top:auto;font:700 30px/1 var(--f-display);color:#ffd166}
+.poster.b .d{font-size:14px;margin-top:6px}
+.poster.b .c{font-size:11px;opacity:.7;margin-top:10px}
+.timer{font:600 40px var(--f-mono);color:var(--accent);text-align:center}
+/* демо: формы */
+.mini-form{background:var(--card);border-radius:10px;padding:18px;max-width:320px;display:flex;flex-direction:column}
+.mini-form .lbl{font-size:13px;color:var(--muted)}
+.mini-form .inp{height:36px;border:1px solid var(--line);border-radius:6px;background:var(--paper)}
+.dots{display:grid;grid-template-columns:repeat(6,16px);column-gap:14px;justify-content:center;padding:10px}
+.dot{width:16px;height:16px;border-radius:50%;background:var(--muted)}
+.settings{display:flex;flex-direction:column;gap:6px;max-width:340px}
+.settings .it{padding:9px 12px;font-size:14px;display:flex;justify-content:space-between}
+.settings .grp{display:flex;flex-direction:column;gap:2px;border-radius:10px;transition:background .2s}
+.settings.on .grp{background:var(--card);padding:4px 0}
+.settings.on{gap:16px}
+.carousel{display:flex;gap:10px;overflow:hidden;background:var(--card);padding:12px;border-radius:10px}
+.carousel .cc{flex:none;height:110px;border-radius:8px;background:var(--tint);border:1px solid var(--line)}
+.screen{position:relative;height:220px;border-radius:12px;background:var(--card);overflow:hidden;max-width:340px;margin:0 auto;border:1px solid var(--line)}
+.screen .row{height:12px;border-radius:4px;background:var(--line);margin:14px 16px}
+.screen .scrim{position:absolute;inset:0;background:rgba(10,12,18,.55);transition:opacity .2s}
+.screen .modal{position:absolute;left:36px;right:36px;top:52px;background:var(--card);border-radius:12px;padding:16px;border:1px solid var(--line)}
+.screen .modal .row{margin:10px 0}
+/* баланс */
+.bal-frame{position:relative;aspect-ratio:400/240;background:var(--card);border-radius:8px;border:1px solid var(--line)}
+.bal-frame .axis{position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed var(--line)}
+.bal-frame .blk{position:absolute;bottom:18%}
+.beam-wrap{height:46px;position:relative;margin-top:8px}
+.beam{position:absolute;left:8%;right:8%;top:14px;height:6px;border-radius:3px;background:var(--ink);transition:transform .25s}
+.fulcrum{position:absolute;left:50%;top:20px;width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-bottom:20px solid var(--muted);transform:translateX(-50%)}
+.oc{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.oc .fr{position:relative;aspect-ratio:3/4;background:var(--card);border:1px solid var(--line);border-radius:6px}
+.oc .sq{position:absolute;width:34%;aspect-ratio:1;background:var(--ink);left:33%}
+.oc .cap{text-align:center;font:600 14px var(--f-mono);margin-top:6px}
+/* воздух */
+.pcard{background:var(--card);border-radius:12px;border:1px solid var(--line);width:260px;display:flex;flex-direction:column}
+.pcard .img{background:var(--tint);border-radius:8px;aspect-ratio:4/3}
+.pcard .ttl{font-weight:700;font-size:16px;line-height:1.25}
+.pcard .meta{font-size:13px;color:var(--muted);line-height:1.3}
+.pcard .price{font-weight:700;font-size:18px;line-height:1.2}
+.pcard .buy{background:var(--accent);color:#fff;text-align:center;border-radius:8px;padding:8px;font-weight:600;font-size:14px}
+:root[data-theme="dark"] .pcard .buy{color:#0d1220}
+/* форма */
+.shapes{display:flex;gap:28px;justify-content:center;align-items:center;flex-wrap:wrap;padding:12px}
+.shape-card{text-align:center;font-size:14px;color:var(--muted)}
+.nest{background:var(--accent);display:inline-block;transition:all .15s}
+.nest-in{background:var(--card);width:180px;height:110px;transition:all .15s}
+.play{width:120px;height:120px;border-radius:50%;background:var(--accent);position:relative;margin:0 auto}
+.play svg{position:absolute;inset:0}
+.ui-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.ui-row .b{padding:9px 14px;font-size:14px;font-weight:600;background:var(--accent);color:#fff}
+.ui-row .i{padding:8px 12px;font-size:14px;border:1px solid var(--line);background:var(--paper);color:var(--muted);min-width:120px}
+.ui-row .c{padding:10px;border:1px solid var(--line);background:var(--card);font-size:13px;width:120px}
+:root[data-theme="dark"] .ui-row .b{color:#0d1220}
+/* мини-макеты в квизе */
+.mock{background:var(--demo);border-radius:10px;padding:14px;margin:8px 0;max-width:420px}
+.order-list{list-style:none;padding:0;margin:10px 0}
+.order-list li{display:flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:6px 0;font-size:15px}
+.order-list li span{flex:1}
+.order-list button{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:6px;width:32px;height:30px;cursor:pointer}
+.order-list li.ok{border-color:var(--good);background:var(--goodt)}
+.order-list li.no{border-color:var(--bad);background:var(--badt)}
+.brief{font-size:15px;background:var(--paper);border-radius:8px;padding:12px 14px;border:1px solid var(--line)}
+footer{color:var(--muted);font-size:14px;border-top:1px solid var(--line);margin-top:64px;padding-top:20px}
+@media (max-width:900px){
+  .layout{grid-template-columns:1fr;gap:16px;padding:20px 16px 64px}
+  nav.toc{position:static;max-height:none;border:1px solid var(--line);border-radius:12px;padding:8px 12px;background:var(--card)}
+}
+@media (max-width:560px){.pair,.oc{grid-template-columns:1fr}.controls input[type=range]{width:130px}}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="toc" aria-label="Оглавление">
+  <a href="index.html">← Все страницы</a>
+  <b>Глава 0. Введение</b>
+  <a href="#c0-design">Дизайн и «красиво»</a>
+  <a href="#c0-jobs">Профессии</a>
+  <a href="#c0-process">Процесс: от брифа до сдачи</a>
+  <a href="#c0-eye">Насмотренность</a>
+  <div class="prog" id="prog0"></div>
+  <b>Глава 1. Композиция и форма</b>
+  <a href="#c1-gestalt">Как глаз группирует</a>
+  <a href="#c1-balance">Баланс и визуальный вес</a>
+  <a href="#c1-space">Пустое пространство</a>
+  <a href="#c1-form">Форма</a>
+  <a href="#c1-quiz">Разбор: что не так</a>
+  <a href="#c1-work">Итоговая работа</a>
+  <div class="prog" id="prog1"></div>
+</nav>
+
+<main>
+<header class="top">
+  <div class="kicker">Дизайн с нуля · часть 1 · главы 0 и 1</div>
+  <h1>Введение в профессию и композиция с формой</h1>
+  <p class="lead">Сначала разберёмся, чем дизайнер на самом деле занимается и как устроен проект. Потом начнём с самого базового навыка: раскладывать элементы так, чтобы глаз сам понял, что с чем связано и что главное.</p>
+  <p class="note">Как заниматься. Читай тему, играй с примерами, потом делай эксперимент в Figma и отмечай практику. Галочки сохраняются в этом браузере. На обе главы закладывай 15–25 часов: это моя оценка, а не норматив.</p>
+</header>
+
+<!-- ============ ГЛАВА 0 ============ -->
+<section class="chapter" id="c0">
+<div class="chapter-num">ГЛАВА 0</div>
+<h2>Введение</h2>
+
+<!-- 0.1 -->
+<section class="topic" id="c0-design">
+<h3>0.1. Что такое дизайн и чем он отличается от «красиво»</h3>
+<div class="rule"><small>ПРАВИЛО</small>Дизайн — это решение задачи для конкретных людей в конкретных ограничениях. Результат оценивают по тому, понял ли человек и сделал ли то, что нужно, а не по тому, понравилась ли картинка автору.</div>
+
+<p>«Красиво» отвечает на вопрос «приятно ли смотреть». Дизайн отвечает ещё на три:</p>
+<ol>
+  <li><b>Какая задача?</b> Что должно измениться после того, как человек увидел работу: купить билет, найти кнопку оплаты, запомнить бренд, заполнить форму без ошибок.</li>
+  <li><b>Кто аудитория?</b> Пенсионерка с телефоном в автобусе и бухгалтер за двумя мониторами смотрят на один и тот же экран по-разному. Возраст, опыт, обстановка, спешка, устройство — всё это меняет решения.</li>
+  <li><b>Какой результат?</b> Что человек должен понять за первые секунды и что сделать потом. Если ты не можешь сформулировать это одним предложением, макет почти всегда получается размытым.</li>
+</ol>
+<p>Ещё есть <b>ограничения</b>: сроки, бюджет, технологии, фирменный стиль, законы (например, обязательные надписи на упаковке), размер экрана. Дизайнер работает внутри них. Хорошее решение не то, где ограничений нет, а то, где они учтены.</p>
+
+<h4>Почему это работает</h4>
+<p>Внимание у человека ограничено. На экран или афишу он тратит секунды, причём между делом. Всё, что не помогает быстро понять главное, мешает: декоративный шрифт, который трудно прочитать, или дата, спрятанная мелким кеглем в углу. Поэтому дизайн проверяется не вкусом, а поведением: нашёл ли человек нужное, сколько времени потратил, ошибся ли.</p>
+<p>При этом эстетика не враг. Есть эффект, который называют <b>эффектом эстетики и удобства</b>: в исследовании Куросу и Кашимуры (1995) участники оценивали более приятные на вид раскладки банкомата как более удобные, хотя функции у них были одинаковые. Красота повышает доверие и терпимость к мелким проблемам. Но она работает поверх ясности, а не вместо неё.</p>
+
+<div class="demo" id="demo-5sec">
+  <div class="demo-title">Пятисекундный тест</div>
+  <p class="demo-sub">Так проверяют, что считывается с первого взгляда. Нажми кнопку: афиша появится на 5 секунд, потом спрячется и будет вопрос.</p>
+  <div class="poster-wrap" id="p5-stage"><button class="btn" id="p5-start">Показать афишу А</button></div>
+  <div id="p5-q"></div>
+</div>
+
+<h4>Частые ошибки новичков</h4>
+<ul class="mistakes">
+  <li>Начинать с «сделаю красиво», не сформулировав задачу. Получается портфолио из картинок без смысла, и на собеседовании нечего рассказать.</li>
+  <li>Оценивать работу по «мне нравится». Правильный вопрос: «что увидит человек первым, и это то, что нужно?»</li>
+  <li>Думать, что дизайн — это украшение готового. Чаще всего он про порядок: что главное, что второстепенное, что с чем связано.</li>
+  <li>Путать оригинальность с качеством. Привычные решения (корзина справа сверху, кнопка «Оплатить» внизу формы) работают как раз потому, что привычны.</li>
+</ul>
+
+<div class="figma"><span class="label">Эксперимент в Figma</span>
+<ol>
+  <li>Создай фрейм 1080×1350 (формат поста). Сверстай афишу вымышленного концерта: название, дата, время, место, цена.</li>
+  <li>Сначала сделай «красиво»: градиент, крупное наклонённое название, остальное как получится.</li>
+  <li>Покажи кому-нибудь на 5 секунд с телефона и спроси, когда концерт. Или сама: отвернись на минуту и посмотри на афишу 5 секунд.</li>
+  <li>Сделай копию фрейма и переделай: определи, что главное для решения «пойду или нет» (обычно дата и название), и сделай это самым заметным. Сравни.</li>
+</ol>
+</div>
+
+<div class="practice" data-ch="0"><span class="label">Практика</span>
+  <label><input type="checkbox" data-k="0-1-1"> Выбери три приложения или сайта, которыми пользуешься каждый день. Для каждого письменно ответь: какую задачу решает главный экран, кто аудитория, что человек должен сделать первым.</label>
+  <label><input type="checkbox" data-k="0-1-2"> Найди одну вещь в жизни, которая красивая, но неудобная, и одну некрасивую, но удобную. Объясни, почему так, в 3–4 предложениях.</label>
+  <label><input type="checkbox" data-k="0-1-3"> Сделай эксперимент с афишей (две версии в одном файле).</label>
+</div>
+</section>
+
+<!-- 0.2 -->
+<section class="topic" id="c0-jobs">
+<h3>0.2. Профессии в дизайне</h3>
+<div class="rule"><small>ПРАВИЛО</small>Направления отличаются не программой, а тем, какую задачу ты решаешь и чем меряется результат. Базовые навыки (композиция, типографика, цвет, сетки) нужны всем.</div>
+
+<p>Названия должностей в вакансиях гуляют: одну и ту же работу называют «UX/UI-дизайнер», «дизайнер интерфейсов» и «продуктовый дизайнер». Поэтому смотри не на название, а на обязанности в тексте вакансии.</p>
+
+<div class="tablewrap"><table>
+<thead><tr><th>Направление</th><th>Что делает</th><th>Чем меряется результат</th><th>Инструменты</th></tr></thead>
+<tbody>
+<tr><td><b>UX-дизайн</b></td><td>Разбирается, как люди решают задачу. Проводит интервью, строит сценарии и структуру, рисует схемы экранов, тестирует.</td><td>Человек справляется с задачей быстро и без ошибок.</td><td>Figma, FigJam или Miro, таблицы, прототипы</td></tr>
+<tr><td><b>UI-дизайн</b></td><td>Делает визуальный слой интерфейса: компоненты, состояния, отступы, типографику, иконки, тёмную тему.</td><td>Интерфейс понятный, единообразный, его удобно собирать разработчикам.</td><td>Figma (компоненты, переменные, Auto Layout)</td></tr>
+<tr><td><b>Продуктовый дизайн</b></td><td>UX и UI вместе, плюс работа с метриками и командой продукта: гипотезы, эксперименты, приоритеты.</td><td>Цифры продукта: конверсия, удержание, число обращений в поддержку.</td><td>Figma, аналитика, документы с гипотезами</td></tr>
+<tr><td><b>Веб-дизайн</b></td><td>Сайты и лендинги: структура страницы, тексты вместе с маркетологом, адаптив, часто сборка в конструкторе.</td><td>Заявки и продажи с сайта, понятность предложения.</td><td>Figma, Tilda, Webflow и другие конструкторы</td></tr>
+<tr><td><b>Графический дизайн</b></td><td>Логотипы, фирменный стиль, полиграфия, упаковка, реклама, оформление соцсетей.</td><td>Узнаваемость, соответствие бренду, качество печати.</td><td>Illustrator, Photoshop, InDesign или их аналоги, Figma для соцсетей</td></tr>
+<tr><td><b>Моушн-дизайн</b></td><td>Анимация: ролики, анимированные логотипы, анимация интерфейсов, инфографика в движении.</td><td>Ролик понятен, держит внимание, движение помогает смыслу.</td><td>After Effects, Blender, Rive и подобные</td></tr>
+</tbody></table></div>
+
+<h4>Как выглядит рабочий день</h4>
+<p><b>Интерфейсы (UX/UI, продукт).</b> Обычно это работа в команде: менеджер продукта, разработчики, аналитик. День состоит из созвонов (обсуждение задачи, показ макетов, разбор с разработкой), работы в Figma и ответов на вопросы разработчиков: «а что будет, если список пустой?» Большая часть работы — продумывать состояния и крайние случаи, а не рисовать красивый главный экран.</p>
+<p><b>Веб.</b> Часто фриланс или агентство. Много общения с заказчиком, сбор материалов, работа с текстами, сдача по этапам. Нередко дизайнер сам собирает сайт в конструкторе.</p>
+<p><b>Графика.</b> Агентство, студия, отдел маркетинга или фриланс. Много вариантов на старте, презентации заказчику, правки, подготовка файлов к печати (здесь важны технические детали: цветовая модель CMYK, вылеты под обрез, разрешение).</p>
+<p><b>Моушн.</b> Сценарий и раскадровка, потом анимация и рендер. Нужна сильная база композиции, плюс чувство времени и ритма.</p>
+
+<p class="note">Про Adobe. Photoshop и Illustrator — стандарт в графике и рекламе, но в России подписку честно купить сложно. Легальные варианты: бесплатные Photopea (в браузере), GIMP, Inkscape, Krita. По моим данным на конец 2025 года, пакет Affinity стал бесплатным после покупки компанией Canva. Это я сейчас не перепроверяла, уточни перед установкой.</p>
+
+<div class="demo" id="demo-jobs">
+  <div class="demo-title">Угадай направление по задаче</div>
+  <p class="demo-sub">Выбери, кто скорее всего получит такую задачу. Иногда подходят двое, тогда в пояснении скажу.</p>
+  <div id="jobs-quiz"></div>
+</div>
+
+<h4>Частые ошибки при выборе направления</h4>
+<ul class="mistakes">
+  <li>Выбирать по зарплатам из рекламы курсов. Цифры там рекламные, а работа у направлений очень разная по характеру.</li>
+  <li>Считать, что UX/UI — это «рисовать приложения». Рисования там меньше, чем логики, текстов и разговоров.</li>
+  <li>Считать графику «проще». В ней меньше логики интерфейсов, но выше планка визуального качества, и её видно с первого взгляда.</li>
+  <li>Выбирать до того, как попробовала. Поэтому в курсе есть часть 3 с пробами направлений.</li>
+</ul>
+
+<div class="practice" data-ch="0"><span class="label">Практика</span>
+  <label><input type="checkbox" data-k="0-2-1"> Открой 10 вакансий джуниор-уровня по каждому из трёх направлений (интерфейсы, веб, графика). Выпиши требования, которые повторяются хотя бы в трёх вакансиях.</label>
+  <label><input type="checkbox" data-k="0-2-2"> Для каждого направления ответь себе: что в этой работе мне было бы интересно делать каждый день, а что скучно.</label>
+  <label><input type="checkbox" data-k="0-2-3"> Пройди тест «Угадай направление» без ошибок.</label>
+</div>
+</section>
+
+<!-- 0.3 -->
+<section class="topic" id="c0-process">
+<h3>0.3. Как идёт работа над проектом: от брифа до сдачи</h3>
+<div class="rule"><small>ПРАВИЛО</small>Сначала понять задачу, потом искать варианты, потом выбрать и довести один. Каждый этап заканчивается согласованием, чтобы не переделывать всё в конце.</div>
+
+<h4>Этапы</h4>
+<ol>
+  <li><b>Бриф.</b> Документ или разговор, где фиксируют задачу. Без брифа ты рисуешь своё представление о задаче, а не задачу заказчика.</li>
+  <li><b>Погружение.</b> Изучить продукт, аудиторию, конкурентов. В интерфейсах сюда входят исследования с пользователями, в графике — анализ рынка и категории (как выглядят соседи по полке).</li>
+  <li><b>Референсы и концепция.</b> Собрать примеры решений, сформулировать идею и направление. Часто показывают заказчику мудборд (доску настроения), чтобы договориться о стиле до того, как тратить часы на макет.</li>
+  <li><b>Эскизы или схемы.</b> Быстро, грубо, много вариантов. В интерфейсах это вайрфреймы (серые схемы без стиля), в графике — скетчи на бумаге.</li>
+  <li><b>Макет.</b> Детальная проработка выбранного варианта.</li>
+  <li><b>Презентация.</b> Ты показываешь не картинки, а решение: какая была задача и почему сделано именно так.</li>
+  <li><b>Правки.</b> Обычно заранее договариваются о числе кругов правок. Правки записывают списком, а не держат в голове.</li>
+  <li><b>Сдача.</b> Исходники, экспорт в нужных форматах, в интерфейсах — передача разработке и ответы на вопросы, в графике — гайд по использованию и файлы для печати.</li>
+</ol>
+
+<h4>Почему так: «двойной ромб»</h4>
+<p>Британский Совет по дизайну в 2005 году описал процесс как два ромба. В первом ромбе ты сначала расширяешь понимание (собираешь всё о проблеме), потом сужаешь до чёткой формулировки задачи. Во втором снова расширяешь (много вариантов решения), потом сужаешь до одного и доводишь. Смысл в том, что нельзя одновременно искать и выбирать: когда ищешь, критикуешь слишком рано и теряешь хорошие идеи, а когда выбираешь, продолжаешь сомневаться и не доводишь до конца.</p>
+<p>На практике этапы не идут строго по линии: после теста можно вернуться к схемам. Это нормально, это и называют итерациями.</p>
+
+<h4>Что должно быть в брифе</h4>
+<ul>
+  <li><b>Цель:</b> зачем это делается и что должно измениться (больше заявок, понятнее оформление заказа, узнаваемость).</li>
+  <li><b>Аудитория:</b> кто будет пользоваться или смотреть, в какой ситуации.</li>
+  <li><b>Что на выходе:</b> конкретный список: логотип и 3 варианта применения, или 5 экранов, или лендинг с мобильной версией.</li>
+  <li><b>Содержание:</b> тексты, фото, данные. Кто их даёт и когда.</li>
+  <li><b>Ограничения:</b> фирменный стиль, технологии, обязательные элементы.</li>
+  <li><b>Сроки и бюджет.</b></li>
+  <li><b>Примеры:</b> что нравится и что точно не нравится, с объяснением почему.</li>
+  <li><b>Критерий успеха:</b> как поймём, что получилось.</li>
+  <li><b>Кто принимает решение</b> и сколько кругов правок.</li>
+</ul>
+
+<div class="demo" id="demo-order">
+  <div class="demo-title">Разложи этапы по порядку</div>
+  <p class="demo-sub">Двигай стрелками, потом проверь.</p>
+  <ul class="order-list" id="order-list"></ul>
+  <div class="controls"><button class="btn" id="order-check">Проверить</button><button class="btn ghost" id="order-shuffle">Перемешать</button></div>
+  <div id="order-res"></div>
+</div>
+
+<div class="demo" id="demo-brief">
+  <div class="demo-title">Чего не хватает в брифе?</div>
+  <p class="demo-sub">Заказчица прислала сообщение. Отметь, что нужно уточнить, прежде чем начинать работу.</p>
+  <div class="brief">«Здравствуйте! Нам нужен логотип для кофейни, что-нибудь современное и стильное. Хочется чтобы было ярко, но не слишком. Сделаете?»</div>
+  <div id="brief-opts" style="margin-top:12px"></div>
+  <div class="controls"><button class="btn" id="brief-check">Проверить</button></div>
+  <div id="brief-res"></div>
+</div>
+
+<h4>Частые ошибки</h4>
+<ul class="mistakes">
+  <li>Начинать рисовать сразу после «сделайте что-нибудь стильное». Через неделю окажется, что «стильное» у вас разное.</li>
+  <li>Показывать заказчику десять вариантов. Он растеряется и попросит «соединить третий и седьмой». Обычно показывают 2–3 продуманных варианта или один с объяснением.</li>
+  <li>Полировать детали на этапе эскизов. Если направление поменяется, работа уйдёт в корзину.</li>
+  <li>Принимать правки устно. Записывай и отправляй списком: «правильно ли я поняла, что меняем вот это».</li>
+  <li>Не договориться о числе правок. Тогда правки бесконечные.</li>
+</ul>
+
+<div class="practice" data-ch="0"><span class="label">Практика</span>
+  <label><input type="checkbox" data-k="0-3-1"> Напиши бриф по всем пунктам для вымышленного заказа (например, приложение для записи к мастеру маникюра или упаковка чая). Он пригодится в следующих главах.</label>
+  <label><input type="checkbox" data-k="0-3-2"> Напиши пять уточняющих вопросов к брифу про кофейню так, как отправила бы их настоящей заказчице.</label>
+  <label><input type="checkbox" data-k="0-3-3"> Пройди оба упражнения выше без ошибок.</label>
+</div>
+</section>
+
+<!-- 0.4 -->
+<section class="topic" id="c0-eye">
+<h3>0.4. Насмотренность: как собирать референсы и разбирать чужие работы</h3>
+<div class="rule"><small>ПРАВИЛО</small>Насмотренность — это не количество просмотренных картинок, а запас понятых решений. Референс полезен, только если ты можешь сказать, какую задачу он решает и каким приёмом.</div>
+
+<h4>Почему это работает</h4>
+<p>Когда ты садишься делать макет, ты собираешь его из решений, которые уже видела. Если в голове их мало, макеты получаются однообразными, а если много, но без понимания, получается подражание без смысла. Разбор превращает «вижу, что хорошо» в «знаю, почему хорошо», и этот приём потом можно применить к своей задаче, а не скопировать картинку.</p>
+
+<h4>Как разбирать работу: пять вопросов</h4>
+<ol>
+  <li><b>Что я увидела первым, вторым, третьим?</b> Это реальная иерархия.</li>
+  <li><b>Почему именно в таком порядке?</b> Размер, цвет, контраст, положение, пустое место вокруг.</li>
+  <li><b>Как сгруппированы элементы?</b> Что объединено отступами, фоном, линией.</li>
+  <li><b>Какая структура?</b> Где линии выравнивания, сколько колонок, одинаковые ли отступы.</li>
+  <li><b>Что бы я изменила и почему?</b> Если нечего, это тоже ответ, но объясни, что работает.</li>
+</ol>
+
+<h4>Где собирать и чем полезен каждый источник</h4>
+<ul>
+  <li><b>Реальные приложения и сайты</b>, которыми ты пользуешься. Делай скриншоты удачных и неудачных экранов. Это лучший источник: решения прошли проверку настоящими людьми.</li>
+  <li><b>Behance</b> — кейсы с описанием процесса. Хорошо для графики и для того, чтобы увидеть, как оформляют портфолио.</li>
+  <li><b>Dribbble</b> — короткие визуальные шоты. Осторожно: много концептов, которые красиво выглядят, но не работали бы в реальном продукте (мелкий серый текст, неочевидные кнопки).</li>
+  <li><b>Pinterest</b> — удобен для мудбордов и графики, но источники часто потеряны.</li>
+  <li><b>Улица, магазин, книжные полки</b> — вывески, упаковка, меню, обложки. Для графики это обязательный источник.</li>
+</ul>
+
+<h4>Как хранить</h4>
+<p>Заведи один файл в Figma или доску. Раскладывай не по сайтам, а по задачам: «формы регистрации», «пустые состояния», «афиши с крупной типографикой», «карточки товара». Под каждым референсом пиши одну строку: какой приём и зачем. Без подписи через месяц ты не вспомнишь, почему его сохранила.</p>
+
+<h4>Копировать или нет</h4>
+<p>Перерисовать чужой экран один в один для тренировки руки — нормально и полезно, но это упражнение, а не работа для портфолио. В портфолио — только свои решения своих задач. Если заимствуешь приём, понимай, почему он подходит именно твоей задаче.</p>
+
+<h4>Частые ошибки</h4>
+<ul class="mistakes">
+  <li>Сохранять сотни картинок без подписей. Это архив, а не насмотренность.</li>
+  <li>Собирать только «красивое» из Dribbble. Решения реальных продуктов учат больше.</li>
+  <li>Смотреть только своё будущее направление. Графика учит интерфейсному дизайнеру типографике, интерфейсы учат графического дизайнера логике.</li>
+  <li>Брать референс целиком вместо приёма: «сделаю как тут» вместо «тут главное выделено пустым местом вокруг, попробую это».</li>
+</ul>
+
+<div class="figma"><span class="label">Эксперимент в Figma</span>
+<ol>
+  <li>Создай страницу «Референсы» и сделай секции (Shift+S) по задачам: карточки, формы, афиши, главные экраны.</li>
+  <li>Вставь скриншот экрана из любого приложения. Поверх нарисуй цифрами 1, 2, 3 порядок, в котором ты его считываешь.</li>
+  <li>Нарисуй поверх тонкими линиями все линии выравнивания, которые найдёшь. Посчитай их. Чем меньше разных линий, тем спокойнее выглядит экран.</li>
+</ol>
+</div>
+
+<div class="practice" data-ch="0"><span class="label">Практика</span>
+  <label><input type="checkbox" data-k="0-4-1"> Собери 30 референсов по 4–5 задачам, у каждого подпись в одну строку.</label>
+  <label><input type="checkbox" data-k="0-4-2"> Разбери 3 экрана по пяти вопросам письменно, с номерами порядка и линиями выравнивания поверх скриншота.</label>
+  <label><input type="checkbox" data-k="0-4-3"> Найди один референс, который тебе нравится, но плохо решает задачу, и объясни почему.</label>
+</div>
+</section>
+</section>
+
+<!-- ============ ГЛАВА 1 ============ -->
+<section class="chapter" id="c1">
+<div class="chapter-num">ГЛАВА 1</div>
+<h2>Композиция и работа с формой</h2>
+<p>Композиция — это расположение элементов относительно друг друга и формата. Хорошая композиция без единого слова сообщает: что связано, что главное, куда смотреть дальше. Начнём с того, как мозг вообще собирает картинку из отдельных кусков.</p>
+
+<!-- 1.1 -->
+<section class="topic" id="c1-gestalt">
+<h3>1.1. Как глаз группирует элементы</h3>
+<p>В 1920-х годах немецкие психологи гештальт-школы (Макс Вертгеймер и другие) описали, по каким признакам мозг автоматически объединяет отдельные элементы в группы. Это происходит до того, как человек начинает думать, поэтому с этим нельзя спорить подписями: если два элемента выглядят связанными, человек будет считать их связанными. Для дизайнера это главный инструмент порядка. Разберём шесть принципов.</p>
+
+<h4>Близость</h4>
+<div class="rule"><small>ПРАВИЛО</small>Что стоит рядом, воспринимается как группа. Расстояние внутри группы должно быть заметно меньше, чем расстояние между группами. На практике хотя бы в полтора-два раза.</div>
+<p><b>Почему:</b> в природе части одного объекта обычно находятся рядом, и зрение научилось считать близкое единым. Это самый сильный и самый дешёвый способ группировки: не нужны ни рамки, ни цвет, только отступы.</p>
+<div class="demo">
+  <div class="demo-title">Подпись к какому полю?</div>
+  <p class="demo-sub">Меняй расстояние от подписи до её поля и между группами. Смотри, когда подпись «Почта» начинает казаться частью верхнего поля.</p>
+  <div class="stage" style="display:flex;justify-content:center">
+    <div class="mini-form" id="prox-form">
+      <div class="lbl">Имя</div><div class="inp" data-r="in"></div>
+      <div class="lbl" data-r="out">Почта</div><div class="inp" data-r="in"></div>
+      <div class="lbl" data-r="out">Телефон</div><div class="inp" data-r="in"></div>
+    </div>
+  </div>
+  <div class="controls">
+    <label>Подпись → поле <input type="range" id="prox-in" min="2" max="40" value="20"> <span class="mono" id="prox-in-v"></span></label>
+    <label>Между группами <input type="range" id="prox-out" min="4" max="48" value="12"> <span class="mono" id="prox-out-v"></span></label>
+  </div>
+  <div class="verdict" id="prox-v"></div>
+</div>
+
+<h4>Сходство</h4>
+<div class="rule"><small>ПРАВИЛО</small>Элементы, похожие по цвету, форме, размеру или начертанию, воспринимаются как одна категория. Значит, всё одинаковое по смыслу должно выглядеть одинаково, а разное — по-разному.</div>
+<p><b>Почему:</b> похожесть — сигнал «это одного рода». Поэтому все ссылки одного цвета, все кнопки одной формы, все заголовки одного размера. Если ссылка выглядит как обычный текст, её не найдут. Если обычный текст подчеркнуть и выделить цветом, на него будут нажимать.</p>
+<p>Принципы могут спорить между собой. Ниже сетка точек: столбцы раскрашены, а строки можно раздвигать.</p>
+<div class="demo">
+  <div class="demo-title">Близость против сходства</div>
+  <p class="demo-sub">Включи цвет столбцов и двигай расстояние между строками. Что ты видишь: строки или столбцы?</p>
+  <div class="stage"><div class="dots" id="dots"></div></div>
+  <div class="controls">
+    <label><input type="checkbox" id="dots-color"> Раскрасить столбцы</label>
+    <label>Разрыв между строками <input type="range" id="dots-gap" min="4" max="44" value="14"> <span class="mono" id="dots-gap-v"></span></label>
+  </div>
+  <div class="verdict mid" id="dots-v"></div>
+</div>
+<p>Вывод для работы: не создавай конфликт случайно. Если элементы сгруппированы отступами по строкам, а цветом по столбцам, человек не понимает, как читать. Пусть все сигналы говорят одно и то же.</p>
+
+<h4>Общая область</h4>
+<div class="rule"><small>ПРАВИЛО</small>Элементы внутри общей рамки или на общем фоне воспринимаются как группа. Этот сигнал сильнее близости.</div>
+<p><b>Почему:</b> граница прямо говорит «вот это вместе». Психолог Стивен Палмер описал этот принцип в 1992 году. Отсюда карточки, плашки, секции настроек. Но у этого принципа есть цена: каждая рамка добавляет визуального шума, поэтому сначала пробуй сгруппировать отступами, а фон добавляй, когда отступов не хватает (длинные списки, сложные экраны).</p>
+<div class="demo">
+  <div class="demo-title">Экран настроек</div>
+  <p class="demo-sub">Восемь пунктов одним списком. Включи группы и посмотри, насколько быстрее находится нужное.</p>
+  <div class="stage" style="display:flex;justify-content:center">
+    <div class="settings" id="settings">
+      <div class="grp"><div class="it">Имя и фото</div><div class="it">Телефон</div><div class="it">Почта</div></div>
+      <div class="grp"><div class="it">Уведомления</div><div class="it">Звук</div></div>
+      <div class="grp"><div class="it">Способ оплаты</div><div class="it">История покупок</div><div class="it">Выйти</div></div>
+    </div>
+  </div>
+  <div class="controls"><label><input type="checkbox" id="settings-on"> Группы на общем фоне с отступами между ними</label></div>
+</div>
+
+<h4>Замкнутость</h4>
+<div class="rule"><small>ПРАВИЛО</small>Мозг достраивает незаконченные фигуры до целых. Поэтому форму можно обозначить намёком, не рисуя её полностью.</div>
+<p><b>Почему:</b> зрение ищет знакомые простые формы и заполняет пробелы. Классический пример — треугольник Каниджи (1955): три круга с вырезами, и ты видишь белый треугольник, которого нет. В дизайне это используют в логотипах и иконках (форма из частей), а в интерфейсах — например, в пунктирных рамках зоны загрузки файла.</p>
+<div class="demo">
+  <div class="demo-title">Треугольник, которого нет</div>
+  <div class="stage" style="display:flex;justify-content:center">
+    <svg id="kanizsa" viewBox="0 0 240 210" width="240" height="210" role="img" aria-label="Три круга с вырезами образуют иллюзорный треугольник">
+      <defs><mask id="km"><rect width="240" height="210" fill="#fff"/><polygon points="120,30 40,170 200,170" fill="#000"/></mask></defs>
+      <g mask="url(#km)" fill="currentColor" style="color:var(--ink)">
+        <circle cx="120" cy="30" r="26"/><circle cx="40" cy="170" r="26"/><circle cx="200" cy="170" r="26"/>
+      </g>
+      <polygon id="k-outline" points="120,30 40,170 200,170" fill="none" stroke="var(--bad)" stroke-width="2" stroke-dasharray="5 4" opacity="0"/>
+    </svg>
+  </div>
+  <div class="controls"><label><input type="checkbox" id="k-show"> Показать, где «треугольник» на самом деле</label></div>
+</div>
+
+<h4>Непрерывность</h4>
+<div class="rule"><small>ПРАВИЛО</small>Глаз следует за линией и направлением. Элементы, стоящие на одной прямой или кривой, кажутся связанными, а взгляд продолжает движение дальше по линии.</div>
+<p><b>Почему:</b> зрение предпочитает плавное продолжение резким изломам. Отсюда сила выравнивания: элементы на одной вертикальной линии читаются как столбец, даже без рамок. И отсюда приём с обрезанной карточкой в горизонтальной ленте: линия уходит за край, и человек понимает, что там есть продолжение.</p>
+<div class="demo">
+  <div class="demo-title">Есть ли ещё карточки?</div>
+  <p class="demo-sub">В обоих случаях карточек десять. Сравни, где понятно, что ленту можно листать.</p>
+  <div class="carousel" id="car"></div>
+  <div class="controls"><label><input type="checkbox" id="car-cut" checked> Последняя видимая карточка обрезана краем</label></div>
+  <div class="verdict" id="car-v"></div>
+</div>
+
+<h4>Фигура и фон</h4>
+<div class="rule"><small>ПРАВИЛО</small>Человек всегда делит картинку на фигуру (то, на что смотрит) и фон. Дизайнер должен однозначно решить, что здесь фигура.</div>
+<p><b>Почему:</b> если фигура и фон спорят (как в известной иллюзии «ваза или два профиля» Эдгара Рубина, 1915), человек переключается туда-сюда и не может сосредоточиться. Фигурой становится то, что меньше, контрастнее, ближе к центру, имеет замкнутый контур или тень. Самый частый интерфейсный пример — модальное окно: фон под ним затемняют, чтобы окно стало единственной фигурой.</p>
+<div class="demo">
+  <div class="demo-title">Модальное окно</div>
+  <div class="stage"><div class="screen" id="screen">
+    <div class="row" style="width:50%"></div><div class="row"></div><div class="row" style="width:70%"></div><div class="row"></div><div class="row" style="width:60%"></div><div class="row"></div><div class="row" style="width:80%"></div>
+    <div class="scrim" id="scrim"></div>
+    <div class="modal"><div style="font-weight:700;font-size:15px">Удалить заметку?</div><div class="row"></div><div class="row" style="width:60%"></div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><span style="font-size:13px;padding:6px 10px">Отмена</span><span style="font-size:13px;padding:6px 10px;background:var(--bad);color:#fff;border-radius:6px">Удалить</span></div></div>
+  </div></div>
+  <div class="controls"><label><input type="checkbox" id="scrim-on" checked> Затемнить фон</label></div>
+</div>
+
+<p class="note">Есть и другие принципы: <b>общая судьба</b> (что движется вместе, то связано, это важно в анимации) и <b>связанность</b> (элементы, соединённые линией, читаются как пара сильнее, чем просто стоящие рядом). Механика у них та же.</p>
+
+<h4>Частые ошибки</h4>
+<ul class="mistakes">
+  <li>Одинаковые отступы везде. Если между всем по 16 пикселей, групп нет, и экран читается как каша.</li>
+  <li>Подпись поля стоит посередине между двумя полями.</li>
+  <li>Рамка вокруг каждого элемента. Когда всё в карточках, общая область перестаёт что-либо значить.</li>
+  <li>Одинаково выглядят разные по смыслу вещи (кликабельный и некликабельный текст) или по-разному одинаковые (три стиля кнопок для одного действия).</li>
+  <li>Отступ внутри карточки больше, чем между карточками: карточки начинают «слипаться» друг с другом.</li>
+</ul>
+
+<div class="figma"><span class="label">Эксперимент в Figma</span>
+<ol>
+  <li>Собери форму из трёх пар «подпись + поле» на Auto Layout. Каждую пару сделай отдельным вертикальным Auto Layout с отступом 4, а все три пары положи в общий Auto Layout с отступом 4. Посмотри: групп не видно.</li>
+  <li>Поменяй внешний отступ на 24. Группы появились, хотя ты ничего не рисовала.</li>
+  <li>Проверка размытием: выдели фрейм, добавь эффект Layer blur примерно 6–8. Детали пропадут, останутся пятна. Если пятна совпадают с задуманными группами, группировка работает. Потом выключи эффект.</li>
+  <li>Сделай список из 9 строк настроек. Сгруппируй сначала только отступами, потом фоном. Сравни, где спокойнее и где понятнее.</li>
+</ol>
+</div>
+
+<div class="practice" data-ch="1"><span class="label">Практика</span>
+  <label><input type="checkbox" data-k="1-1-1"> Найди в своих приложениях по одному примеру на каждый из шести принципов. Сделай скриншоты и подпиши.</label>
+  <label><input type="checkbox" data-k="1-1-2"> Найди экран, где группировка сломана (отступы одинаковые или подпись непонятно к чему относится). Перерисуй его в Figma с исправлением.</label>
+  <label><input type="checkbox" data-k="1-1-3"> Сделай эксперимент с формой и проверку размытием.</label>
+</div>
+</section>
+
+<!-- 1.2 -->
+<section class="topic" id="c1-balance">
+<h3>1.2. Баланс: визуальный вес, симметрия и асимметрия</h3>
+<div class="rule"><small>ПРАВИЛО</small>У каждого элемента есть визуальный вес. Композиция уравновешена, когда веса распределены так, что ни одна часть не «перевешивает» без причины. Уравновешивать можно симметрией или асимметрией.</div>
+
+<h4>Что делает элемент тяжелее</h4>
+<ul>
+  <li><b>Размер.</b> Самый очевидный фактор.</li>
+  <li><b>Контраст с фоном.</b> Тёмный объект на светлом фоне тяжелее светло-серого того же размера.</li>
+  <li><b>Насыщенность и цвет.</b> Яркое тяжелее приглушённого. Тёплые цвета обычно кажутся тяжелее и ближе холодных, но это зависит от светлоты, так что это тенденция, а не закон.</li>
+  <li><b>Сложность и детали.</b> Фото или текстура тяжелее плоской заливки.</li>
+  <li><b>Одиночество.</b> Элемент, вокруг которого много пустого места, притягивает взгляд сильнее, чем такой же в толпе.</li>
+  <li><b>Смысл.</b> Лица, глаза, цифры и текст притягивают внимание сильнее абстрактных фигур.</li>
+</ul>
+
+<h4>Принцип рычага</h4>
+<p>Баланс похож на качели. Тяжёлый элемент близко к центру уравновешивается лёгким элементом далеко от центра. Поэтому в асимметричной композиции крупный блок можно ставить ближе к оси, а мелкий акцент отнести к краю.</p>
+<div class="demo">
+  <div class="demo-title">Визуальные весы</div>
+  <p class="demo-sub">Слева большой серый блок. Подбери размер, тон и положение маленького блока справа, чтобы качели выровнялись. Модель упрощённая: вес = площадь × тёмность × расстояние до центра. Реальное восприятие сложнее, но логика та же.</p>
+  <div class="bal-frame" id="bal">
+    <div class="axis"></div>
+    <div class="blk" id="bal-big"></div>
+    <div class="blk" id="bal-small"></div>
+  </div>
+  <div class="beam-wrap"><div class="beam" id="beam"></div><div class="fulcrum"></div></div>
+  <div class="controls">
+    <label>Положение <input type="range" id="bal-x" min="54" max="94" value="70"></label>
+    <label>Размер <input type="range" id="bal-s" min="10" max="34" value="16"></label>
+    <label>Тон <input type="range" id="bal-d" min="20" max="100" value="100"></label>
+  </div>
+  <div class="verdict" id="bal-v"></div>
+</div>
+
+<h4>Симметрия и асимметрия</h4>
+<div class="pair">
+  <div class="box"><b>Симметрия</b><p>Левая и правая половины зеркальны. Ощущение: стабильность, спокойствие, торжественность, официальность. Подходит для приглашений, сертификатов, классических брендов, экранов с одним действием. Риск: статично и скучно, а при большом количестве элементов трудно выделить главное.</p></div>
+  <div class="box"><b>Асимметрия</b><p>Половины разные, но веса уравновешены. Ощущение: движение, современность, напряжение. Большинство интерфейсов асимметричны: текст выровнен по левому краю, навигация с одной стороны. Риск: без расчёта веса выглядит как случайность.</p></div>
+</div>
+<p>Баланс не всегда цель. Намеренный дисбаланс создаёт напряжение и подходит для афиш, обложек, рекламы, где нужно зацепить. Главное, чтобы он был решением, а не ошибкой.</p>
+
+<h4>Центр композиции и оптический центр</h4>
+<p>Геометрический центр — точка пересечения диагоналей. Но объект, поставленный ровно туда, кажется опущенным. Оптический центр находится немного выше геометрического. Поэтому заголовок на титульной странице, логотип на заставке или иконку в пустом состоянии экрана обычно поднимают чуть выше середины.</p>
+<div class="demo">
+  <div class="demo-title">Какой квадрат стоит по центру?</div>
+  <p class="demo-sub">Посмотри на оба кадра и выбери, где квадрат кажется ровно посередине по вертикали.</p>
+  <div class="oc">
+    <div><div class="fr"><div class="sq" style="top:33%"></div></div><div class="cap">А</div></div>
+    <div><div class="fr"><div class="sq" style="top:29%"></div></div><div class="cap">Б</div></div>
+  </div>
+  <div class="opts" id="oc-opts"><button class="opt" data-a="a">А</button><button class="opt" data-a="b">Б</button><button class="opt" data-a="s">Одинаково</button></div>
+  <div class="explain" id="oc-res"></div>
+</div>
+
+<p class="note">Про правило третей. Это договорённость, пришедшая из живописи и фотографии: делим кадр на три части по вертикали и горизонтали и ставим важное на линии или пересечения. Это удобная отправная точка, чтобы уйти от «всё в центре», а не закон восприятия. Хорошие композиции часто его нарушают.</p>
+
+<h4>Частые ошибки</h4>
+<ul class="mistakes">
+  <li>Всё по центру «на всякий случай». Получается симметрия без цели и длинные строки с рваными краями слева и справа, которые тяжело читать.</li>
+  <li>Тяжёлый блок в углу, а остальное пусто: композиция «заваливается».</li>
+  <li>Математически точное центрирование в фрейме, из-за которого объект выглядит опущенным.</li>
+  <li>Уравновешивать, добавляя элементы. Часто лучше уменьшить или осветлить тяжёлый элемент.</li>
+</ul>
+
+<div class="figma"><span class="label">Эксперимент в Figma</span>
+<ol>
+  <li>Фрейм 1080×1350. Поставь большой тёмный круг в левую нижнюю треть. Композиция заваливается.</li>
+  <li>Уравновесь тремя способами в трёх копиях фрейма: маленький тёмный элемент справа сверху; крупный, но светлый элемент справа; строка текста справа сверху. Сравни.</li>
+  <li>Оптический центр: в новом фрейме поставь квадрат ровно в центр через выравнивание. Сделай копию и подними квадрат на 3–5% высоты фрейма. Отдались от экрана и сравни.</li>
+  <li>Проверь в чёрно-белом: добавь поверх фрейма прямоугольник на весь фрейм с чёрной заливкой и режимом наложения Saturation или Color. Цвет уйдёт, останется только светлота, по которой и читается вес.</li>
+</ol>
+</div>
+
+<div class="practice" data-ch="1"><span class="label">Практика</span>
+  <label><input type="checkbox" data-k="1-2-1"> Выровняй весы в упражнении тремя разными сочетаниями положения, размера и тона.</label>
+  <label><input type="checkbox" data-k="1-2-2"> Сделай одну и ту же обложку (заголовок, подзаголовок, одна фигура) в двух вариантах: симметрия и уравновешенная асимметрия. Подпиши, какое настроение у каждой.</label>
+  <label><input type="checkbox" data-k="1-2-3"> Найди три афиши или обложки с намеренным дисбалансом и объясни, зачем он там.</label>
+</div>
+</section>
+
+<!-- 1.3 -->
+<section class="topic" id="c1-space">
+<h3>1.3. Пустое пространство</h3>
+<div class="rule"><small>ПРАВИЛО</small>Пустое пространство — такой же элемент композиции, как текст и картинки. Оно группирует, выделяет главное и задаёт характер. Его распределяют по иерархии: меньше внутри групп, больше между ними, больше всего вокруг главного.</div>
+
+<h4>Два вида</h4>
+<p><b>Микропространство</b> — между буквами, строками, внутри кнопки, между подписью и полем. От него зависит, удобно ли читать. <b>Макропространство</b> — поля страницы, расстояния между блоками и секциями. От него зависит, как воспринимается композиция целиком.</p>
+
+<h4>Почему работает</h4>
+<ul>
+  <li><b>Группирует.</b> Это та же близость: пустота между группами их разделяет.</li>
+  <li><b>Выделяет.</b> Элемент с большим пустым полем вокруг становится главным, даже если он небольшой. Это изоляция.</li>
+  <li><b>Снижает нагрузку.</b> Чем меньше одновременно конкурирующих элементов, тем быстрее человек находит нужное.</li>
+  <li><b>Задаёт характер.</b> Много воздуха читается как дорогое, спокойное, уверенное. Плотность читается как информативность и деловитость.</li>
+</ul>
+
+<h4>Когда мало и когда много</h4>
+<p>Воздух — не «чем больше, тем лучше». Плотность уместна там, где человеку нужно видеть много сразу и он это делает каждый день: таблицы, биржевые терминалы, почта, рабочие панели, новостные ленты. Много воздуха уместно там, где одно главное сообщение и одно действие: лендинг, премиальный бренд, экран входа, афиша. Ошибка не в количестве воздуха, а в том, что он распределён без иерархии.</p>
+
+<div class="demo">
+  <div class="demo-title">Карточка товара</div>
+  <p class="demo-sub">Двигай количество воздуха. Потом переключи способ распределения: равномерно или по иерархии.</p>
+  <div class="stage" style="display:flex;justify-content:center">
+    <div class="pcard" id="pcard">
+      <div class="img"></div>
+      <div class="ttl" data-g="t">Керамическая кружка, 350 мл</div>
+      <div class="meta" data-g="m">Ручная работа, серая глазурь</div>
+      <div class="price" data-g="p">1 290 ₽</div>
+      <div class="buy" data-g="b">В корзину</div>
+    </div>
+  </div>
+  <div class="controls">
+    <label>Воздух <input type="range" id="sp-k" min="0" max="100" value="55"></label>
+    <label><input type="checkbox" id="sp-h" checked> Отступы по иерархии</label>
+  </div>
+  <div class="verdict" id="sp-v"></div>
+</div>
+
+<h4>Частые ошибки</h4>
+<ul class="mistakes">
+  <li>«Заполнить пустоту». Пустое место не означает, что работа не доделана.</li>
+  <li>Равномерные отступы везде: нет групп.</li>
+  <li>Отступ внутри блока больше, чем снаружи: блоки слипаются с соседями.</li>
+  <li>Прижимать текст к краю кнопки, карточки или экрана. Внутреннее поле должно быть хотя бы таким же, как расстояние между строками внутри.</li>
+  <li>Брать воздух из лендингов в рабочие интерфейсы, где человеку нужно видеть 30 строк, а не 8.</li>
+</ul>
+
+<div class="figma"><span class="label">Эксперимент в Figma</span>
+<ol>
+  <li>Собери карточку товара на Auto Layout: картинка, название, описание, цена, кнопка.</li>
+  <li>Сделай три копии: все отступы по 8; все по 24; по иерархии (название и описание 4, описание и цена 12, до кнопки 16, внутренние поля 16).</li>
+  <li>Положи в ряд по три одинаковые карточки каждого варианта с промежутком 16. Проверь, не сливаются ли карточки между собой там, где внутренние поля большие.</li>
+  <li>Включи Layer blur на ряду и сравни, где группы читаются.</li>
+</ol>
+</div>
+
+<div class="practice" data-ch="1"><span class="label">Практика</span>
+  <label><input type="checkbox" data-k="1-3-1"> Найди один плотный экран, где плотность оправдана, и один, где не хватает воздуха. Объясни разницу.</label>
+  <label><input type="checkbox" data-k="1-3-2"> Сделай эксперимент с тремя вариантами карточки и выбери лучший с объяснением.</label>
+  <label><input type="checkbox" data-k="1-3-3"> Возьми перегруженный экран (скриншот любого сайта) и перерисуй, убирая лишнее и перераспределяя отступы. Ничего не добавляй.</label>
+</div>
+</section>
+
+<!-- 1.4 -->
+<section class="topic" id="c1-form">
+<h3>1.4. Форма: характер, скругления, единый язык, оптические компенсации</h3>
+<div class="rule"><small>ПРАВИЛО</small>Форма несёт характер. Во всей работе формы должны говорить на одном языке: одинаковые скругления для одинаковых ролей, одна логика углов и линий. А точные геометрические размеры иногда приходится обманывать, чтобы глазу казалось правильно.</div>
+
+<h4>Характер форм</h4>
+<div class="shapes">
+  <div class="shape-card"><svg width="80" height="80" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="38" fill="var(--accent)"/></svg><div>Круг</div></div>
+  <div class="shape-card"><svg width="80" height="80" viewBox="0 0 80 80" aria-hidden="true"><rect x="4" y="4" width="72" height="72" fill="var(--accent)"/></svg><div>Квадрат</div></div>
+  <div class="shape-card"><svg width="80" height="80" viewBox="0 0 80 80" aria-hidden="true"><polygon points="40,4 78,76 2,76" fill="var(--accent)"/></svg><div>Треугольник</div></div>
+</div>
+<ul>
+  <li><b>Круг и мягкие формы:</b> мягкость, дружелюбие, цельность, движение (может катиться). Детские, медицинские, сервисные продукты.</li>
+  <li><b>Квадрат и прямоугольник:</b> устойчивость, порядок, надёжность, рациональность. Банки, документы, инструменты. Это основа почти всех интерфейсов, потому что экран прямоугольный и в прямоугольник удобнее вписать текст.</li>
+  <li><b>Треугольник и острые углы:</b> направление, движение, напряжение, агрессия. Стрелки, указатели, спорт, предупреждения.</li>
+</ul>
+<p>Честно: это не законы физиологии, а сильные ассоциации, частично культурные. Они хорошо работают как отправная точка, но решает контекст. Острый треугольник в логотипе детского сада покажется странным, а круглые формы в логотипе охранного агентства — недостаточно серьёзными.</p>
+
+<h4>Скругления</h4>
+<p>Радиус скругления — один из самых заметных признаков характера интерфейса. Ноль: строго, технично, по-газетному. Небольшой (4–8 пикселей): нейтрально, деловито. Средний (12–16): мягко, современно. Полное скругление (кнопка-«таблетка»): дружелюбно, игриво.</p>
+<p><b>Правило вложенных скруглений.</b> Если один скруглённый элемент лежит внутри другого с отступом, внутренний радиус = внешний радиус − отступ. Иначе зазор между ними в углах будет толще, чем по сторонам, и это выглядит неряшливо. Почему: у двух скруглений с общим центром дуги идут параллельно, так зазор везде одинаковый.</p>
+<div class="demo">
+  <div class="demo-title">Вложенные скругления</div>
+  <p class="demo-sub">Синий — внешняя карточка, белое — элемент внутри. Посмотри на углы.</p>
+  <div class="stage" style="display:flex;justify-content:center;padding:28px"><div class="nest" id="nest"><div class="nest-in" id="nest-in"></div></div></div>
+  <div class="controls">
+    <label>Внешний радиус <input type="range" id="n-r" min="0" max="48" value="32"> <span class="mono" id="n-r-v"></span></label>
+    <label>Отступ <input type="range" id="n-p" min="4" max="32" value="12"> <span class="mono" id="n-p-v"></span></label>
+    <label><input type="checkbox" id="n-c"> Внутренний = внешний − отступ</label>
+  </div>
+  <div class="verdict" id="n-v"></div>
+</div>
+<p><b>Сглаживание углов.</b> Обычное скругление — это четверть окружности, приставленная к прямой. В месте стыка кривизна меняется резко, и глаз иногда видит «излом». Сглаженный угол (суперэллипс, его ещё называют «скверкл») переходит в прямую плавно. Так сделаны, например, иконки приложений в iOS. В Figma это настройка Corner smoothing в параметрах радиуса.</p>
+
+<h4>Единый язык форм</h4>
+<p>Заведи небольшую шкалу радиусов и назначь их ролям. Например: 4 — мелкие элементы (чекбоксы, теги), 8 — кнопки и поля, 16 — карточки и окна. Конкретные числа выбираешь ты, важно, чтобы одна роль всегда имела один радиус. То же с линиями: одна толщина обводки у полей, одна у иконок.</p>
+<div class="pair">
+  <div class="box"><span class="tag bad">плохо</span>
+    <div class="ui-row"><span class="b" style="border-radius:2px">Купить</span><span class="i" style="border-radius:14px">Поиск</span><span class="c" style="border-radius:22px">Карточка</span><span class="b" style="border-radius:99px">Ещё</span></div>
+    <p class="explain">Четыре радиуса без системы. Кажется, что элементы взяты из разных продуктов.</p>
+  </div>
+  <div class="box"><span class="tag good">хорошо</span>
+    <div class="ui-row"><span class="b" style="border-radius:8px">Купить</span><span class="i" style="border-radius:8px">Поиск</span><span class="c" style="border-radius:16px">Карточка</span><span class="b" style="border-radius:8px">Ещё</span></div>
+    <p class="explain">Кнопки и поля по 8, контейнеры по 16. Видна одна система.</p>
+  </div>
+</div>
+
+<h4>Оптические компенсации</h4>
+<p>Глаз оценивает не геометрию, а впечатление. Поэтому точные размеры иногда выглядят неправильно, и их подправляют. Основные случаи:</p>
+<ol>
+  <li><b>Круг и треугольник кажутся меньше квадрата той же ширины.</b> У квадрата площадь заполняет всю рамку, у круга и треугольника — нет. Поэтому их делают чуть больше, чтобы казались равными. В шрифтах так же: круглые буквы (О, С) немного выходят за линию строки и верхнюю линию, иначе кажутся мельче.</li>
+  <li><b>Треугольник «плей» в круге сдвигают вправо.</b> По рамке он стоит в центре, но масса треугольника сосредоточена у его основания слева, поэтому кажется сдвинутым влево.</li>
+  <li><b>Оптический центр выше геометрического</b> — разобрали в балансе.</li>
+  <li><b>Горизонтальные линии кажутся толще вертикальных</b> той же толщины. Поэтому в шрифтах горизонтальные штрихи делают тоньше.</li>
+  <li><b>Текст и иконка в кнопке.</b> Математическое центрирование учитывает выносные элементы букв и пустые поля иконки, поэтому содержимое иногда выглядит смещённым. Проверяй глазом и двигай на 1–2 пикселя.</li>
+</ol>
+<div class="demo">
+  <div class="demo-title">Компенсации</div>
+  <p class="demo-sub">Сдвинь треугольник так, чтобы он казался по центру. Потом включи компенсацию размеров у фигур.</p>
+  <div class="pair">
+    <div class="stage">
+      <div class="play"><svg viewBox="0 0 120 120" aria-hidden="true"><polygon id="tri" points="0,0" fill="#fff"/></svg></div>
+      <div class="controls" style="justify-content:center"><label>Сдвиг вправо <input type="range" id="tri-x" min="0" max="10" value="0" step="0.5"> <span class="mono" id="tri-v"></span></label></div>
+    </div>
+    <div class="stage">
+      <svg viewBox="0 0 300 120" width="100%" aria-hidden="true" id="sizes"></svg>
+      <div class="controls" style="justify-content:center"><label><input type="checkbox" id="sz-c"> Компенсировать</label></div>
+    </div>
+  </div>
+  <div class="verdict mid" id="comp-v"></div>
+</div>
+
+<h4>Частые ошибки</h4>
+<ul class="mistakes">
+  <li>Радиусы «на глаз» в каждом элементе: 6, 10, 12, 20 в одном экране.</li>
+  <li>Одинаковый радиус у внешнего и вложенного элемента.</li>
+  <li>Смешивать острые и круглые формы без смысла: квадратные фото рядом с круглыми кнопками и скошенными плашками.</li>
+  <li>Доверять только цифрам выравнивания. Иконки, треугольники, круглые фигуры часто требуют ручной подстройки.</li>
+  <li>Обратная крайность: «компенсировать» всё подряд и сбить сетку. Компенсация — это 1–3 пикселя или несколько процентов, а не заметный сдвиг.</li>
+</ul>
+
+<div class="figma"><span class="label">Эксперимент в Figma</span>
+<ol>
+  <li>Сделай карточку с радиусом 24 и отступом 12 на Auto Layout, внутри картинку с радиусом 24. Посмотри на углы. Поменяй внутренний радиус на 12.</li>
+  <li>Нарисуй квадрат, круг и треугольник шириной 100. Поставь в ряд. Увеличивай круг и треугольник, пока не покажутся равными квадрату. Запиши, на сколько процентов пришлось увеличить.</li>
+  <li>Нарисуй круг 64 и треугольник «плей» внутри. Выровняй по центру через выравнивание, потом сдвигай вправо по 1 пикселю, пока не станет на глаз по центру.</li>
+  <li>Сделай одну и ту же кнопку с радиусом 16 и Corner smoothing 0 и 60%. Увеличь масштаб до 400% и сравни углы.</li>
+</ol>
+</div>
+
+<div class="practice" data-ch="1"><span class="label">Практика</span>
+  <label><input type="checkbox" data-k="1-4-1"> Выпиши радиусы скруглений у кнопок, полей и карточек в двух приложениях (можно на глаз по скриншоту в Figma). Есть ли система?</label>
+  <label><input type="checkbox" data-k="1-4-2"> Придумай шкалу радиусов из трёх значений для своего вымышленного проекта из брифа и объясни, почему такой характер.</label>
+  <label><input type="checkbox" data-k="1-4-3"> Сделай все четыре эксперимента с формами.</label>
+</div>
+</section>
+
+<!-- квиз -->
+<section class="topic" id="c1-quiz">
+<h3>Разбор: что здесь не так?</h3>
+<p>Шесть мини-макетов. В каждом одна главная проблема. Сначала сформулируй её своими словами, потом выбери вариант.</p>
+<div class="demo" id="quiz"></div>
+</section>
+
+<!-- итог -->
+<section class="topic" id="c1-work">
+<h3>Итоговая работа по главе 1</h3>
+<p>Задача: афиша для события из твоего брифа (или любого вымышленного: лекция, выставка, мастер-класс). Формат 1080×1350. Содержимое: название, одна строка описания, дата и время, место, цена или «вход свободный», одна фигура или фото.</p>
+<div class="practice" data-ch="1"><span class="label">Сделать и проверить</span>
+  <label><input type="checkbox" data-k="1-w-1"> Три варианта: симметричный, асимметричный уравновешенный, с намеренным дисбалансом.</label>
+  <label><input type="checkbox" data-k="1-w-2"> В каждом варианте группы читаются при Layer blur 8: название отдельно, дата-время-место вместе.</label>
+  <label><input type="checkbox" data-k="1-w-3"> Отступы внутри групп минимум в полтора раза меньше, чем между группами.</label>
+  <label><input type="checkbox" data-k="1-w-4"> Ни одного элемента вплотную к краю: поля со всех сторон не меньше 64 пикселей.</label>
+  <label><input type="checkbox" data-k="1-w-5"> Скругления и формы из одной системы, вложенные радиусы посчитаны.</label>
+  <label><input type="checkbox" data-k="1-w-6"> Пятисекундный тест на другом человеке: он назвал дату и что за событие.</label>
+  <label><input type="checkbox" data-k="1-w-7"> Под каждым вариантом 2–3 предложения: какой приём использован и почему.</label>
+</div>
+<p class="note">Пришли мне три варианта скриншотами сюда в чат, разберу по критериям главы. Буду спорить, если не соглашусь.</p>
+</section>
+</section>
+
+<footer>Теория написана мной на основе общепринятой базы: принципы гештальта, визуальный вес, оптические компенсации описаны в учебниках по композиции и типографике. Фамилии и годы исследований я указала по памяти и не сверяла сегодня по первоисточникам. Ссылок на внешние материалы в главах нет намеренно.</footer>
+</main>
+</div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+/* практика: галочки и прогресс */
+function updProg(){
+  ['0','1'].forEach(ch=>{
+    const boxes=$$(`.practice[data-ch="${ch}"] input`); const done=boxes.filter(b=>b.checked).length;
+    $('#prog'+ch).textContent=`Практика: ${done} из ${boxes.length}`;
+  });
+}
+$$('.practice input').forEach(b=>{
+  b.checked=store.get('dz-'+b.dataset.k)==='1';
+  b.addEventListener('change',()=>{store.set('dz-'+b.dataset.k,b.checked?'1':'0');updProg()});
+});
+updProg();
+
+/* 0.1 пятисекундный тест */
+(function(){
+  const stage=$('#p5-stage'), q=$('#p5-q');
+  const P={
+    a:'<div class="poster a"><div class="shape"></div><div class="t">Ночь<br>джаза</div><div class="d">Клуб «Подвал», ул. Ленина 12<br>23 ноября, начало в 20:00</div><div class="c">Вход 800 ₽</div></div>',
+    b:'<div class="poster b"><div class="t">Ночь джаза</div><div class="s">Клуб «Подвал», ул. Ленина 12</div><div class="big">23 ноября</div><div class="d">Начало в 20:00</div><div class="c">Вход 800 ₽</div></div>'
+  };
+  const opts=['19:00','20:00','21:00','Не успела увидеть'];
+  function run(v){
+    q.innerHTML='';
+    let t=5; stage.innerHTML=P[v]+`<div class="timer" style="margin-left:20px" id="p5-t">${t}</div>`;
+    const iv=setInterval(()=>{t--; const el=$('#p5-t'); if(el) el.textContent=t; if(t<=0){clearInterval(iv); ask(v)}},1000);
+  }
+  function ask(v){
+    stage.innerHTML='<div class="note">Афиша спрятана.</div>';
+    q.innerHTML='<p style="font-weight:600;margin:12px 0 0">Во сколько начало концерта?</p><div class="opts">'+opts.map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join('')+'</div><div class="explain" id="p5-e"></div>';
+    q.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+      const ok=b.dataset.o==='20:00';
+      q.querySelectorAll('.opt').forEach(x=>{x.disabled=true; if(x.dataset.o==='20:00')x.classList.add('right')});
+      if(!ok)b.classList.add('wrong');
+      stage.innerHTML=P[v];
+      const e=$('#p5-e');
+      if(v==='a'){
+        e.innerHTML=(ok?'Получилось, но посмотри, сколько сил это стоило. ':'Так и задумано. ')+'В афише А всё внимание забирают градиент, кольцо и наклонное название. Дата и время мелкие, полупрозрачные и в углу. Красиво, но задача «понять, когда идти» не решена.<div class="controls"><button class="btn" id="p5-b">Теперь афиша Б</button></div>';
+        $('#p5-b').onclick=()=>run('b');
+      } else {
+        e.innerHTML=(ok?'Скорее всего, в этот раз было проще. ':'Возможно, ты уже ждала подвоха и смотрела на другое. ')+'В афише Б дата самая заметная после названия, время сразу под ней, всё остальное тише. Порядок важности совпадает с порядком, в котором человек принимает решение. Визуально она проще, но работает лучше.<div class="controls"><button class="btn ghost" id="p5-r">Пройти заново</button></div>';
+        $('#p5-r').onclick=()=>run('a');
+      }
+    });
+  }
+  $('#p5-start').onclick=()=>run('a');
+})();
+
+/* 0.2 квиз профессий */
+(function(){
+  const R=['UX/UI или продукт','Веб-дизайн','Графика','Моушн'];
+  const Q=[
+    ['Пользователи бросают оформление заказа на шаге с адресом. Нужно понять почему и переделать шаг.',0,'Это интерфейс плюс исследование: разобраться в причине, переделать сценарий, проверить. Продуктовый дизайнер ещё посмотрит на метрику до и после.'],
+    ['Сделать упаковку для новой линейки печенья, три вкуса.',2,'Упаковка — классическая графика: фирменный стиль, печать, вид на полке.'],
+    ['Лендинг для курсов английского, чтобы оставляли заявки. Собрать в конструкторе.',1,'Сайт под заявки и сборка в конструкторе — типичная задача веб-дизайнера.'],
+    ['Анимированная заставка из логотипа для видео на YouTube-канале.',3,'Движение и тайминг — моушн.'],
+    ['Добавить в банковское приложение тёмную тему и проверить, что все экраны нормально выглядят.',0,'Работа с компонентами, стилями и состояниями интерфейса — UI-часть.'],
+    ['Оформление соцсетей для кофейни: шаблоны постов и сторис.',2,'Чаще всего графический дизайнер. Иногда это делает веб-дизайнер, если ведёт клиента целиком.'],
+    ['Пять экранов приложения записи к врачу: от выбора специалиста до подтверждения.',0,'Сценарий из нескольких экранов с логикой — UX/UI.'],
+    ['Логотип и фирменный стиль для студии йоги, а потом сайт-визитка.',2,'Логотип и стиль — графика. Сайт потом может сделать тот же человек или веб-дизайнер: границы между направлениями размытые.']
+  ];
+  const box=$('#jobs-quiz');
+  box.innerHTML=Q.map((q,i)=>`<div class="quiz-item"><div>${i+1}. ${q[0]}</div><div class="opts">${R.map((r,j)=>`<button class="opt" data-i="${i}" data-j="${j}">${r}</button>`).join('')}</div><div class="explain" id="jq${i}"></div></div>`).join('')+'<div class="verdict mid" id="jq-score">Отвечено 0 из 8</div>';
+  let answered=0,right=0;
+  box.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i,j=+b.dataset.j,q=Q[i];
+    const row=b.parentElement; if(row.dataset.done)return; row.dataset.done=1; answered++;
+    row.querySelectorAll('.opt').forEach(x=>{x.disabled=true; if(+x.dataset.j===q[1])x.classList.add('right')});
+    if(j===q[1])right++; else b.classList.add('wrong');
+    $('#jq'+i).textContent=q[2];
+    $('#jq-score').textContent=`Отвечено ${answered} из 8, верно ${right}`;
+  });
+})();
+
+/* 0.3 порядок этапов */
+(function(){
+  const S=['Бриф','Погружение и исследование','Референсы и концепция','Эскизы или схемы','Детальный макет','Презентация решения','Правки','Сдача и передача файлов'];
+  let cur=[];
+  const ul=$('#order-list');
+  function shuffle(){cur=S.map((s,i)=>i);for(let i=cur.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[cur[i],cur[j]]=[cur[j],cur[i]]} if(cur.every((v,i)=>v===i))cur.reverse(); draw(); $('#order-res').innerHTML=''}
+  function draw(mark){
+    ul.innerHTML=cur.map((v,k)=>`<li class="${mark?(v===k?'ok':'no'):''}"><span>${S[v]}</span><button aria-label="Выше" data-k="${k}" data-d="-1">↑</button><button aria-label="Ниже" data-k="${k}" data-d="1">↓</button></li>`).join('');
+    ul.querySelectorAll('button').forEach(b=>b.onclick=()=>{const k=+b.dataset.k,d=+b.dataset.d,n=k+d; if(n<0||n>=cur.length)return; [cur[k],cur[n]]=[cur[n],cur[k]]; draw()});
+  }
+  $('#order-shuffle').onclick=shuffle;
+  $('#order-check').onclick=()=>{draw(true); const ok=cur.filter((v,i)=>v===i).length;
+    $('#order-res').innerHTML=`<div class="verdict ${ok===8?'good':'bad'}">${ok===8?'Всё верно.':'На своих местах '+ok+' из 8. Зелёные стоят правильно, красные передвинь.'} Помни: в жизни этапы иногда возвращаются назад, но начинать с макета без брифа и концепции — почти всегда потеря времени.</div>`};
+  shuffle();
+})();
+
+/* 0.3 бриф */
+(function(){
+  const O=[
+    ['Какая аудитория у кофейни: студенты, офисные работники, семьи?',1],
+    ['Где будет использоваться логотип: вывеска, стаканы, соцсети, меню?',1],
+    ['Есть ли название и как оно пишется?',1],
+    ['Какой любимый цвет у заказчицы?',0],
+    ['Что значит «современное и стильное»: 2–3 примера, которые нравятся и не нравятся, с объяснением.',1],
+    ['Сроки, бюджет и сколько вариантов и кругов правок.',1],
+    ['Какой шрифт использовать?',0],
+    ['Чем кофейня отличается от соседних, что о ней должны думать люди.',1]
+  ];
+  $('#brief-opts').innerHTML=O.map((o,i)=>`<label style="display:flex;gap:10px;padding:5px 0;align-items:flex-start"><input type="checkbox" id="bo${i}" style="margin-top:5px;accent-color:var(--accent)"> <span id="bt${i}">${o[0]}</span></label>`).join('');
+  $('#brief-check').onclick=()=>{
+    let ok=0;
+    O.forEach((o,i)=>{const c=$('#bo'+i).checked, t=$('#bt'+i); const r=c===!!o[1]; if(r)ok++; t.style.color=r?'var(--good)':'var(--bad)'});
+    $('#brief-res').innerHTML=`<div class="verdict ${ok===8?'good':'mid'}">Верно ${ok} из 8. Нужны все пункты, кроме любимого цвета и шрифта. Любимый цвет заказчицы — не задача, а вкус, важно, что подходит аудитории и месту. Шрифт выбирает дизайнер, это часть решения, а не вопрос к брифу.</div>`;
+  };
+})();
+
+/* 1.1 близость */
+(function(){
+  const f=$('#prox-form'), i=$('#prox-in'), o=$('#prox-out');
+  function upd(){
+    const a=+i.value,b=+o.value;
+    $('#prox-in-v').textContent=a+' px'; $('#prox-out-v').textContent=b+' px';
+    f.querySelectorAll('[data-r="in"]').forEach(e=>e.style.marginTop=a+'px');
+    f.querySelectorAll('[data-r="out"]').forEach(e=>e.style.marginTop=b+'px');
+    const v=$('#prox-v'), r=b/a;
+    if(r<1.15){v.className='verdict bad';v.textContent='Плохо. Подпись «Почта» стоит к верхнему полю так же близко или ближе, чем к своему. Непонятно, к чему она относится.'}
+    else if(r<1.8){v.className='verdict mid';v.textContent='Слабо. Разница есть, но её надо высматривать. Увеличь отступ между группами или сократи внутренний.'}
+    else{v.className='verdict good';v.textContent=`Хорошо. Между группами в ${r.toFixed(1)} раза больше, чем внутри. Пары читаются сразу, без рамок.`}
+  }
+  i.oninput=o.oninput=upd; upd();
+})();
+
+/* 1.1 точки */
+(function(){
+  const d=$('#dots'); d.innerHTML=Array.from({length:36},(_,k)=>`<div class="dot" data-c="${k%6}"></div>`).join('');
+  const c=$('#dots-color'), g=$('#dots-gap');
+  function upd(){
+    const gap=+g.value; $('#dots-gap-v').textContent=gap+' px';
+    d.style.rowGap='14px';
+    [...d.children].forEach((e,k)=>{const r=Math.floor(k/6); e.style.marginTop=(r%2===0&&r>0)?(gap-14+'px'):'0'; e.style.background=c.checked&&(+e.dataset.c%2===0)?'var(--accent)':'var(--muted)'});
+    const big=gap>=28, v=$('#dots-v');
+    if(!c.checked&&gap<20)v.textContent='Одно поле точек: ни один сигнал не группирует.';
+    else if(!c.checked)v.textContent='Видишь пары строк: сработала близость.';
+    else if(gap<20)v.textContent='Видишь столбцы: сработало сходство по цвету.';
+    else if(!big)v.textContent='Конфликт: цвет тянет к столбцам, отступы к строкам. Большинству в этот момент трудно сказать, что они видят. Так выглядит экран, где сигналы противоречат друг другу.';
+    else v.textContent='Сильная близость начинает побеждать цвет: снова видны пары строк, хотя столбцы раскрашены. Победит более сильный сигнал.';
+  }
+  c.onchange=g.oninput=upd; upd();
+})();
+
+/* 1.1 общая область, замкнутость, карусель, модалка */
+$('#settings-on').onchange=e=>$('#settings').classList.toggle('on',e.target.checked);
+$('#k-show').onchange=e=>$('#k-outline').setAttribute('opacity',e.target.checked?1:0);
+(function(){
+  const car=$('#car'), cut=$('#car-cut');
+  function upd(){
+    const w=car.clientWidth-24, n=3, gap=10;
+    const cw=cut.checked?(w-gap*n)/(n+0.4):(w-gap*(n-1))/n;
+    car.innerHTML=Array.from({length:10},()=>`<div class="cc" style="width:${cw}px"></div>`).join('');
+    const v=$('#car-v');
+    if(cut.checked){v.className='verdict good';v.textContent='Линия карточек уходит за край, и глаз продолжает её: понятно, что лента листается.'}
+    else{v.className='verdict bad';v.textContent='Три карточки влезли ровно. Выглядит как законченный ряд, и многие не догадаются, что можно листать.'}
+  }
+  cut.onchange=upd; window.addEventListener('resize',upd); upd();
+})();
+$('#scrim-on').onchange=e=>$('#scrim').style.opacity=e.target.checked?1:0;
+
+/* 1.2 весы */
+(function(){
+  const big=$('#bal-big'), sm=$('#bal-small'), x=$('#bal-x'), s=$('#bal-s'), d=$('#bal-d');
+  const BIG={cx:32,size:30,dark:.45};
+  function tone(t){return `color-mix(in srgb, var(--ink) ${Math.round(t*100)}%, var(--card))`}
+  big.style.width=BIG.size+'%'; big.style.aspectRatio='1'; big.style.left=(BIG.cx-BIG.size/2)+'%'; big.style.background=tone(BIG.dark);
+  function upd(){
+    const cx=+x.value, size=+s.value, dark=+d.value/100;
+    sm.style.width=size+'%'; sm.style.aspectRatio='1'; sm.style.left=(cx-size/2)+'%'; sm.style.background=tone(dark);
+    if(cx+size/2>98) sm.style.left=(98-size)+'%';
+    const realCx=Math.min(cx,98-size/2);
+    const mb=BIG.size*BIG.size*BIG.dark*(50-BIG.cx);
+    const ms=size*size*dark*(realCx-50);
+    const net=(ms-mb)/mb;
+    const ang=Math.max(-9,Math.min(9,net*9));
+    $('#beam').style.transform=`rotate(${ang}deg)`;
+    const v=$('#bal-v');
+    if(Math.abs(net)<.12){v.className='verdict good';v.textContent='Равновесие. Заметь: маленький блок справа может быть в несколько раз меньше большого, если он темнее и дальше от центра.'}
+    else if(net<0){v.className='verdict bad';v.textContent='Перевешивает левая сторона. Отодвинь маленький блок к краю, сделай его крупнее или темнее.'}
+    else{v.className='verdict bad';v.textContent='Теперь перевешивает правая. Приблизь блок к центру, уменьши или осветли.'}
+  }
+  [x,s,d].forEach(e=>e.oninput=upd); upd();
+})();
+
+/* 1.2 оптический центр */
+$$('#oc-opts .opt').forEach(b=>b.onclick=()=>{
+  $$('#oc-opts .opt').forEach(x=>{x.disabled=true; if(x.dataset.a==='b')x.classList.add('right')});
+  if(b.dataset.a!=='b')b.classList.add('wrong');
+  $('#oc-res').textContent='В кадре А квадрат стоит точно в геометрическом центре, и обычно он кажется опущенным. В кадре Б он поднят примерно на 4% высоты кадра и чаще воспринимается как стоящий по центру. Если тебе показалось иначе, это нормально: эффект небольшой и зависит от формата. Но в работе стоит проверять центрирование глазом, а не только кнопкой выравнивания.';
+});
+
+/* 1.3 воздух */
+(function(){
+  const c=$('#pcard'), k=$('#sp-k'), h=$('#sp-h');
+  function upd(){
+    const t=+k.value/100, pad=Math.round(4+t*20);
+    c.style.padding=pad+'px';
+    const items=[...c.children];
+    let gaps;
+    if(h.checked){const b=2+t*6; gaps=[pad, b*.6, b*2.4, b*3];}
+    else{const g=Math.round(4+t*20); gaps=[g,g,g,g];}
+    items.forEach((e,i)=>{e.style.marginTop=i===0?'0':Math.round(gaps[i-1])+'px'});
+    const v=$('#sp-v');
+    if(t<.2){v.className='verdict bad';v.textContent='Тесно: текст прижат к краям, глаз не отдыхает, всё сливается.'}
+    else if(!h.checked){v.className='verdict mid';v.textContent='Воздух есть, но распределён одинаково. Название, описание, цена и кнопка стоят на равных расстояниях, и непонятно, что с чем связано.'}
+    else if(t>.9){v.className='verdict mid';v.textContent='Воздуха много. Для одной карточки на лендинге хорошо, в каталоге на 40 товаров человек будет слишком много листать.'}
+    else{v.className='verdict good';v.textContent='Хорошо: название и описание вместе, цена отделена, кнопка отделена ещё сильнее. Пустота работает как разметка.'}
+  }
+  k.oninput=h.onchange=upd; upd();
+})();
+
+/* 1.4 вложенные скругления */
+(function(){
+  const n=$('#nest'), ni=$('#nest-in'), r=$('#n-r'), p=$('#n-p'), c=$('#n-c');
+  function upd(){
+    const R=+r.value,P=+p.value, inner=c.checked?Math.max(R-P,0):R;
+    $('#n-r-v').textContent=R; $('#n-p-v').textContent=P;
+    n.style.borderRadius=R+'px'; n.style.padding=P+'px'; ni.style.borderRadius=inner+'px';
+    const v=$('#n-v');
+    if(c.checked||Math.abs(inner-(R-P))<1||R===0){v.className='verdict good';v.textContent=`Внутренний радиус ${inner}. Зазор в углах такой же, как по сторонам: дуги параллельны.`}
+    else{v.className='verdict bad';v.textContent=`Внутренний радиус ${inner}, такой же, как внешний. Зазор в углах толще, чем по сторонам. Нужно ${Math.max(R-P,0)}.`}
+  }
+  [r,p].forEach(e=>e.oninput=upd); c.onchange=upd; upd();
+})();
+
+/* 1.4 компенсации */
+(function(){
+  const tri=$('#tri'), tx=$('#tri-x'), sz=$('#sizes'), sc=$('#sz-c');
+  function upd(){
+    const w=36,h=42,off=+tx.value, x0=60-w/2+off, y0=60-h/2;
+    tri.setAttribute('points',`${x0},${y0} ${x0+w},60 ${x0},${y0+h}`);
+    $('#tri-v').textContent=off+' px';
+    const k=sc.checked;
+    const S=64, cs=k?S*1.1:S, ts=k?S*1.2:S;
+    sz.innerHTML=`<rect x="${50-S/2}" y="${60-S/2}" width="${S}" height="${S}" fill="var(--ink)"/>
+      <circle cx="150" cy="60" r="${cs/2}" fill="var(--ink)"/>
+      <polygon points="250,${60-ts/2} ${250+ts/2},${60+ts/2} ${250-ts/2},${60+ts/2}" fill="var(--ink)"/>
+      <line x1="0" y1="${60-S/2}" x2="300" y2="${60-S/2}" stroke="var(--bad)" stroke-dasharray="3 3" stroke-width="1"/>
+      <line x1="0" y1="${60+S/2}" x2="300" y2="${60+S/2}" stroke="var(--bad)" stroke-dasharray="3 3" stroke-width="1"/>`;
+    const v=$('#comp-v');
+    let a = off<2?'Треугольник стоит по центру рамки, но кажется сдвинутым влево. ':off<=5?'Примерно так: треугольник на глаз по центру. Центр его массы — на трети ширины от основания, поэтому сдвиг нужен в сторону острия. ':'Перебор: теперь он ушёл вправо. Компенсация меньше, чем кажется. ';
+    a += k?'Фигуры: круг увеличен на 10%, треугольник на 20% относительно квадрата (красные линии — границы квадрата). Теперь они кажутся ближе по размеру. Проценты примерные, в каждом случае подбирают глазом.':'Фигуры одной ширины и высоты, но круг и особенно треугольник кажутся меньше квадрата.';
+    v.textContent=a;
+  }
+  tx.oninput=sc.onchange=upd; upd();
+})();
+
+/* квиз: что не так */
+(function(){
+  const A=['Близость','Сходство','Баланс','Пустое пространство','Язык форм'];
+  const lbl='font-size:12px;color:var(--muted)', inp='height:28px;border:1px solid var(--line);border-radius:6px;background:var(--card)';
+  const btn=r=>`display:inline-block;padding:7px 12px;font-size:13px;font-weight:600;background:var(--accent);color:var(--card);border-radius:${r}px`;
+  const Q=[
+    {m:`<div style="display:flex;flex-direction:column;max-width:260px"><div style="${inp}"></div><div style="${lbl};margin:12px 0">Пароль</div><div style="${inp}"></div><div style="${lbl};margin:12px 0">Повторите пароль</div><div style="${inp}"></div></div>`,a:0,e:'Подписи стоят ровно посередине между полями, и непонятно, к верхнему или нижнему полю каждая относится. Исправление: подпись вплотную к своему полю (4–6), между парами 16–24.'},
+    {m:`<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><span style="${btn(2)}">Сохранить</span><span style="${btn(18)}">Отправить</span><span style="padding:7px 12px;font-size:13px;border:1px solid var(--line);border-radius:10px">Отмена</span><span style="${btn(99)}">Далее</span></div>`,a:4,e:'Четыре кнопки, четыре разных радиуса. Выглядит как сборка из разных продуктов. Нужна одна шкала: например, все кнопки 8.'},
+    {m:`<div style="font-size:14px;line-height:1.5;max-width:340px">Доставка по городу <span style="color:var(--accent);font-weight:600">бесплатно</span> при заказе от 1500 ₽. Подробнее об условиях можно узнать <span>в разделе доставки</span>. Акция действует <span style="color:var(--accent);font-weight:600">до 30 ноября</span>.</div>`,a:1,e:'Синим жирным выделен обычный текст, а единственная ссылка («в разделе доставки») выглядит как обычный текст. Человек будет нажимать на выделенное и не найдёт ссылку. Одинаковое по смыслу должно выглядеть одинаково, разное — по-разному.'},
+    {m:`<div style="display:flex;flex-direction:column;gap:12px;max-width:260px;font-size:14px"><div style="font-weight:700;font-size:16px">Йога для начинающих</div><div>Каждый вторник и четверг</div><div style="font-weight:700;font-size:16px">Растяжка</div><div>Каждую субботу</div><div style="font-weight:700;font-size:16px">Медитация</div><div>По воскресеньям</div></div>`,a:3,e:'Все расстояния одинаковые, 12. Расписание под названием не привязано к своему занятию и одинаково близко к следующему названию. Пустое место распределено без иерархии. Нужно: название и расписание рядом, между занятиями втрое больше.'},
+    {m:`<div style="position:relative;aspect-ratio:4/3;background:var(--card);border-radius:6px;max-width:300px"><div style="position:absolute;right:6%;bottom:6%;width:42%;aspect-ratio:1;background:var(--ink);border-radius:50%"></div><div style="position:absolute;right:6%;top:8%;font-weight:700;font-size:15px">ВЫСТАВКА</div><div style="position:absolute;right:6%;top:20%;font-size:11px;color:var(--muted)">12–20 мая</div></div>`,a:2,e:'Всё прижато к правому краю, слева пустота, и композиция заваливается вправо. Это не похоже на намеренный приём: напряжению не на что опереться. Нужен противовес слева или перенос крупной фигуры ближе к оси.'},
+    {m:`<div style="background:var(--accent);padding:10px;border-radius:20px;max-width:260px"><div style="background:var(--card);border-radius:20px;height:90px"></div></div>`,a:4,e:'Внешний и внутренний радиус одинаковые, 20, при отступе 10. В углах зазор толще, чем по сторонам. Внутренний должен быть 20 − 10 = 10.'}
+  ];
+  const box=$('#quiz');
+  box.innerHTML=Q.map((q,i)=>`<div class="quiz-item"><b>${i+1}.</b><div class="mock">${q.m}</div><div class="opts">${A.map((a,j)=>`<button class="opt" data-i="${i}" data-j="${j}">${a}</button>`).join('')}</div><div class="explain" id="qq${i}"></div></div>`).join('')+'<div class="verdict mid" id="qq-s">Отвечено 0 из 6</div>';
+  let n=0,r=0;
+  box.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i,j=+b.dataset.j,row=b.parentElement; if(row.dataset.done)return; row.dataset.done=1; n++;
+    row.querySelectorAll('.opt').forEach(x=>{x.disabled=true; if(+x.dataset.j===Q[i].a)x.classList.add('right')});
+    if(j===Q[i].a)r++; else b.classList.add('wrong');
+    $('#qq'+i).textContent=Q[i].e; $('#qq-s').textContent=`Отвечено ${n} из 6, верно ${r}`;
+  });
+})();
+</script>
+</body>
+</html>

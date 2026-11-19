@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Пробный маршрут в дизайн</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Unbounded:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Учебник-конспект: узкая колонка текста + липкое оглавление слева; демо в рамках «лабораторного стола» */
+:root{
+  --paper:#f5f6f8; --card:#ffffff; --ink:#15181d; --muted:#596170; --line:#dde2e8;
+  --accent:#2f56e0; --tint:#e9eefd; --bad:#c43d2c; --badt:#fbe9e6; --good:#1d7f55; --goodt:#e3f3ea;
+  --demo:#eceff3;
+  --f-display:"Unbounded", "Golos Text", system-ui, sans-serif;
+  --f-body:"Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#111419; --card:#191d24; --ink:#e7eaef; --muted:#9aa3b1; --line:#2a303a;
+    --accent:#86a0ff; --tint:#1d2538; --bad:#ff7d6a; --badt:#3a201c; --good:#55c690; --goodt:#16302a;
+    --demo:#20252e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#111419; --card:#191d24; --ink:#e7eaef; --muted:#9aa3b1; --line:#2a303a;
+  --accent:#86a0ff; --tint:#1d2538; --bad:#ff7d6a; --badt:#3a201c; --good:#55c690; --goodt:#16302a;
+  --demo:#20252e; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 var(--f-body)}
+a{color:var(--accent)}
+h1,h2,h3,h4{text-wrap:balance;line-height:1.2;margin:0}
+h1{font:700 clamp(28px,4.2vw,42px)/1.12 var(--f-display);letter-spacing:-.01em}
+h2{font:700 clamp(22px,3vw,30px)/1.2 var(--f-display);margin-top:8px}
+h3{font-size:22px;font-weight:700;margin-top:48px}
+h4{font-size:17px;font-weight:700;margin-top:24px}
+p,ul,ol{margin:12px 0}
+li{margin:6px 0}
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:48px;max-width:1180px;margin:0 auto;padding:32px 24px 80px}
+nav.toc{position:sticky;top:20px;align-self:start;font-size:14px;max-height:calc(100vh - 40px);overflow:auto}
+nav.toc b{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:18px 0 6px}
+nav.toc a{display:block;color:var(--ink);text-decoration:none;padding:4px 8px;border-radius:6px}
+nav.toc a:hover{background:var(--tint)}
+nav.toc .prog{font-family:var(--f-mono);font-size:12px;color:var(--muted);padding:0 8px}
+main{max-width:760px}
+header.top{margin-bottom:24px}
+.kicker{font-size:13px;color:var(--muted);letter-spacing:.04em}
+.lead{font-size:19px;color:var(--muted);max-width:62ch}
+.chapter{border-top:2px solid var(--ink);padding-top:24px;margin-top:56px}
+.chapter-num{font:600 13px var(--f-mono);color:var(--accent)}
+.topic{scroll-margin-top:16px}
+.rule{background:var(--tint);border-left:4px solid var(--accent);padding:16px 20px;border-radius:0 10px 10px 0;margin:20px 0;font-weight:500}
+.rule small{display:block;font:600 12px var(--f-mono);color:var(--accent);margin-bottom:6px;letter-spacing:.04em}
+.label{font:600 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:28px 0 4px;display:block}
+.note{font-size:15px;color:var(--muted);border:1px dashed var(--line);border-radius:10px;padding:12px 16px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin:16px 0}
+.demo{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:20px 0}
+.demo-title{font-weight:700;margin-bottom:4px}
+.demo-sub{font-size:14px;color:var(--muted);margin:0 0 14px}
+.controls{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;margin:14px 0 4px;font-size:15px}
+.controls label{display:flex;align-items:center;gap:8px}
+.controls input[type=range]{width:160px;accent-color:var(--accent)}
+.mono{font-family:var(--f-mono);font-size:13px}
+.verdict{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:15px}
+.verdict.good{background:var(--goodt);color:var(--good)}
+.verdict.bad{background:var(--badt);color:var(--bad)}
+.verdict.mid{background:var(--tint);color:var(--accent)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tag{display:inline-block;font:600 12px var(--f-mono);padding:2px 8px;border-radius:99px;margin-bottom:8px}
+.tag.bad{background:var(--badt);color:var(--bad)}
+.tag.good{background:var(--goodt);color:var(--good)}
+.stage{background:var(--demo);border-radius:10px;padding:16px;overflow:hidden}
+button{font:inherit}
+.btn{font:600 15px var(--f-body);background:var(--accent);color:#fff;border:0;border-radius:8px;padding:9px 16px;cursor:pointer}
+:root[data-theme="dark"] .btn{color:#0d1220}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn{color:#0d1220}}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.btn:focus-visible,.opt:focus-visible,input:focus-visible,nav a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.opt{font:500 15px var(--f-body);background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 12px;cursor:pointer;text-align:left}
+.opt:hover{border-color:var(--accent)}
+.opt.right{background:var(--goodt);border-color:var(--good);color:var(--good)}
+.opt.wrong{background:var(--badt);border-color:var(--bad);color:var(--bad)}
+.opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.mistakes li::marker{color:var(--bad)}
+.figma{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:16px 0}
+.figma ol{padding-left:22px}
+.practice{background:var(--card);border:2px solid var(--ink);border-radius:12px;padding:16px 20px;margin:20px 0}
+.practice label{display:flex;gap:10px;align-items:flex-start;padding:6px 0;cursor:pointer}
+.practice input{margin-top:5px;width:18px;height:18px;accent-color:var(--good);flex:none}
+.practice .count{font:600 13px var(--f-mono);color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:15px}
+.tablewrap{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{font-size:13px;color:var(--muted);font-weight:600}
+tr:last-child td{border-bottom:0}
+.quiz-item{border-top:1px solid var(--line);padding:14px 0}
+.quiz-item:first-child{border-top:0}
+.explain{font-size:15px;margin-top:8px;color:var(--muted)}
+/* демо: постер */
+.poster-wrap{display:flex;justify-content:center;min-height:300px;align-items:center}
+.poster{width:240px;height:300px;border-radius:6px;position:relative;overflow:hidden;font-family:var(--f-body)}
+.poster.a{background:linear-gradient(160deg,#ffcf6b,#ff6fa1 45%,#7b5cff);color:#fff}
+.poster.a .t{position:absolute;left:14px;top:18px;font:700 34px/0.95 var(--f-display);color:rgba(255,255,255,.92);transform:rotate(-6deg)}
+.poster.a .d{position:absolute;right:10px;bottom:52px;font-size:10px;color:rgba(255,255,255,.75);text-align:right;line-height:1.3}
+.poster.a .c{position:absolute;left:16px;bottom:16px;font-size:9px;color:rgba(255,255,255,.7)}
+.poster.a .shape{position:absolute;width:170px;height:170px;border-radius:50%;border:14px solid rgba(255,255,255,.35);right:-40px;top:70px}
+.poster.b{background:#1b1f2a;color:#fff;padding:18px;display:flex;flex-direction:column}
+.poster.b .t{font:700 26px/1 var(--f-display)}
+.poster.b .s{font-size:12px;opacity:.75;margin-top:6px}
+.poster.b .big{margin-top:auto;font:700 30px/1 var(--f-display);color:#ffd166}
+.poster.b .d{font-size:14px;margin-top:6px}
+.poster.b .c{font-size:11px;opacity:.7;margin-top:10px}
+.timer{font:600 40px var(--f-mono);color:var(--accent);text-align:center}
+/* демо: формы */
+.mini-form{background:var(--card);border-radius:10px;padding:18px;max-width:320px;display:flex;flex-direction:column}
+.mini-form .lbl{font-size:13px;color:var(--muted)}
+.mini-form .inp{height:36px;border:1px solid var(--line);border-radius:6px;background:var(--paper)}
+.dots{display:grid;grid-template-columns:repeat(6,16px);column-gap:14px;justify-content:center;padding:10px}
+.dot{width:16px;height:16px;border-radius:50%;background:var(--muted)}
+.settings{display:flex;flex-direction:column;gap:6px;max-width:340px}
+.settings .it{padding:9px 12px;font-size:14px;display:flex;justify-content:space-between}
+.settings .grp{display:flex;flex-direction:column;gap:2px;border-radius:10px;transition:background .2s}
+.settings.on .grp{background:var(--card);padding:4px 0}
+.settings.on{gap:16px}
+.carousel{display:flex;gap:10px;overflow:hidden;background:var(--card);padding:12px;border-radius:10px}
+.carousel .cc{flex:none;height:110px;border-radius:8px;background:var(--tint);border:1px solid var(--line)}
+.screen{position:relative;height:220px;border-radius:12px;background:var(--card);overflow:hidden;max-width:340px;margin:0 auto;border:1px solid var(--line)}
+.screen .row{height:12px;border-radius:4px;background:var(--line);margin:14px 16px}
+.screen .scrim{position:absolute;inset:0;background:rgba(10,12,18,.55);transition:opacity .2s}
+.screen .modal{position:absolute;left:36px;right:36px;top:52px;background:var(--card);border-radius:12px;padding:16px;border:1px solid var(--line)}
+.screen .modal .row{margin:10px 0}
+/* баланс */
+.bal-frame{position:relative;aspect-ratio:400/240;background:var(--card);border-radius:8px;border:1px solid var(--line)}
+.bal-frame .axis{position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed var(--line)}
+.bal-frame .blk{position:absolute;bottom:18%}
+.beam-wrap{height:46px;position:relative;margin-top:8px}
+.beam{position:absolute;left:8%;right:8%;top:14px;height:6px;border-radius:3px;background:var(--ink);transition:transform .25s}
+.fulcrum{position:absolute;left:50%;top:20px;width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-bottom:20px solid var(--muted);transform:translateX(-50%)}
+.oc{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.oc .fr{position:relative;aspect-ratio:3/4;background:var(--card);border:1px solid var(--line);border-radius:6px}
+.oc .sq{position:absolute;width:34%;aspect-ratio:1;background:var(--ink);left:33%}
+.oc .cap{text-align:center;font:600 14px var(--f-mono);margin-top:6px}
+/* воздух */
+.pcard{background:var(--card);border-radius:12px;border:1px solid var(--line);width:260px;display:flex;flex-direction:column}
+.pcard .img{background:var(--tint);border-radius:8px;aspect-ratio:4/3}
+.pcard .ttl{font-weight:700;font-size:16px;line-height:1.25}
+.pcard .meta{font-size:13px;color:var(--muted);line-height:1.3}
+.pcard .price{font-weight:700;font-size:18px;line-height:1.2}
+.pcard .buy{background:var(--accent);color:#fff;text-align:center;border-radius:8px;padding:8px;font-weight:600;font-size:14px}
+:root[data-theme="dark"] .pcard .buy{color:#0d1220}
+/* форма */
+.shapes{display:flex;gap:28px;justify-content:center;align-items:center;flex-wrap:wrap;padding:12px}
+.shape-card{text-align:center;font-size:14px;color:var(--muted)}
+.nest{background:var(--accent);display:inline-block;transition:all .15s}
+.nest-in{background:var(--card);width:180px;height:110px;transition:all .15s}
+.play{width:120px;height:120px;border-radius:50%;background:var(--accent);position:relative;margin:0 auto}
+.play svg{position:absolute;inset:0}
+.ui-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.ui-row .b{padding:9px 14px;font-size:14px;font-weight:600;background:var(--accent);color:#fff}
+.ui-row .i{padding:8px 12px;font-size:14px;border:1px solid var(--line);background:var(--paper);color:var(--muted);min-width:120px}
+.ui-row .c{padding:10px;border:1px solid var(--line);background:var(--card);font-size:13px;width:120px}
+:root[data-theme="dark"] .ui-row .b{color:#0d1220}
+/* мини-макеты в квизе */
+.mock{background:var(--demo);border-radius:10px;padding:14px;margin:8px 0;max-width:420px}
+.order-list{list-style:none;padding:0;margin:10px 0}
+.order-list li{display:flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:6px 0;font-size:15px}
+.order-list li span{flex:1}
+.order-list button{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:6px;width:32px;height:30px;cursor:pointer}
+.order-list li.ok{border-color:var(--good);background:var(--goodt)}
+.order-list li.no{border-color:var(--bad);background:var(--badt)}
+.brief{font-size:15px;background:var(--paper);border-radius:8px;padding:12px 14px;border:1px solid var(--line)}
+footer{color:var(--muted);font-size:14px;border-top:1px solid var(--line);margin-top:64px;padding-top:20px}
+@media (max-width:900px){
+  .layout{grid-template-columns:1fr;gap:16px;padding:20px 16px 64px}
+  nav.toc{position:static;max-height:none;border:1px solid var(--line);border-radius:12px;padding:8px 12px;background:var(--card)}
+}
+@media (max-width:560px){.pair,.oc{grid-template-columns:1fr}.controls input[type=range]{width:130px}}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="toc" aria-label="Оглавление">
+  <a href="index.html">← Все страницы</a>
+  <b>Маршрут</b>
+  <a href="#t-how">Как пройти</a>
+  <b>Этап 1. Знакомство</b>
+  <a href="#t-what">Что такое дизайн</a>
+  <a href="#t-dirs">Направления</a>
+  <a href="#t-process">Как идёт проект</a>
+  <b>Этап 2. Первый навык</b>
+  <a href="#t-comp">Композиция за вечер</a>
+  <a href="#t-poster">Мини-работа: афиша</a>
+  <b>Этап 3. Пробы</b>
+  <a href="#t-ui">Проба А. Интерфейс</a>
+  <a href="#t-gr">Проба Б. Графика</a>
+  <a href="#t-web">Проба В. Веб</a>
+  <b>Решение</b>
+  <a href="#t-diary">Дневник и итог</a>
+  <div class="prog" id="progT"></div>
+</nav>
+
+<main>
+<header class="top">
+  <div class="kicker">Дизайн с нуля · пробный маршрут</div>
+  <h1>Пробный маршрут: твоё ли это</h1>
+  <p class="lead">Короткий путь, чтобы попробовать дизайн руками и честно решить: идти дальше, в какое направление, или спокойно отказаться. Без месяцев теории.</p>
+</header>
+
+<section class="topic" id="t-how">
+<h3 style="margin-top:8px">Как пройти</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>Этап</th><th>Что делаешь</th><th>Время</th></tr></thead>
+<tbody>
+<tr><td><b>1. Знакомство</b></td><td>Что такое дизайн, чем отличаются направления, как идёт проект</td><td class="mono">4–5 ч</td></tr>
+<tr><td><b>2. Первый навык</b></td><td>Главные правила композиции и одна афиша</td><td class="mono">5–7 ч</td></tr>
+<tr><td><b>3. Пробы</b></td><td>Три маленькие задачи: интерфейс, графика, веб</td><td class="mono">10–14 ч</td></tr>
+<tr><td><b>Решение</b></td><td>Дневник после каждой пробы и итог</td><td class="mono">1 ч</td></tr>
+</tbody></table></div>
+<p>Всего около 20–25 часов, в твоём темпе это две-три недели. Время я оценила сама, это не норматив.</p>
+<div class="rule"><small>ГЛАВНОЕ</small>На этом маршруте не важно, получится ли красиво. В начале у всех выходит средне. Следи за другим: затягивает ли процесс, хочется ли переделать, когда видишь ошибку, интересно ли разбираться, почему одно работает, а другое нет.</div>
+<p class="note">Полная версия глав 0 и 1 остаётся отдельной страницей «Введение и композиция». Здесь та же база, только сжатая. Если пойдёшь дальше, вернёшься к полной: всё, что сделаешь здесь, туда засчитается.</p>
+</section>
+
+<!-- ЭТАП 1 -->
+<section class="chapter" id="t-s1">
+<div class="chapter-num">ЭТАП 1</div>
+<h2>Знакомство</h2>
+
+<section class="topic" id="t-what">
+<h3>Что такое дизайн и чем он отличается от «красиво»</h3>
+<div class="rule"><small>ПРАВИЛО</small>Дизайн — это решение задачи для конкретных людей в конкретных ограничениях. Его проверяют поведением: понял ли человек, нашёл ли нужное, сделал ли, что требовалось.</div>
+<p>Перед любой работой дизайнер отвечает на три вопроса. <b>Задача:</b> что должно измениться после того, как человек увидел работу (купил билет, нашёл кнопку, запомнил бренд). <b>Аудитория:</b> кто смотрит и в какой ситуации (в спешке с телефона или спокойно за компьютером). <b>Результат:</b> что человек должен понять за первые секунды и что сделать потом.</p>
+<p>Красота при этом важна: красивое вызывает больше доверия и кажется удобнее. Но она работает поверх ясности, а не вместо неё. Афиша с роскошным градиентом, где дату не разглядеть, — плохой дизайн, даже если она тебе нравится.</p>
+<p>Поэтому большая часть работы дизайнера — не украшать, а наводить порядок: решать, что главное, что второстепенное и что с чем связано.</p>
+</section>
+
+<section class="topic" id="t-dirs">
+<h3>Направления: что делают и кому подходят</h3>
+<p>Названия должностей в вакансиях путаются, поэтому смотри на суть работы. Последний столбец здесь самый важный для тебя: примерь его на себя.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Направление</th><th>Суть работы</th><th>Тебе понравится, если…</th><th>Будет тяжело, если…</th></tr></thead>
+<tbody>
+<tr><td><b>UX/UI и продуктовый</b></td><td>Приложения и сервисы: сценарии, экраны, состояния, компоненты. Работа в команде с разработчиками и менеджерами.</td><td>нравится логика и головоломки, интересно, почему людям неудобно, любишь доводить мелочи до системы</td><td>хочется рисовать, а не думать о том, что будет при пустом списке и ошибке сети; не любишь созвоны и обсуждения</td></tr>
+<tr><td><b>Веб-дизайн</b></td><td>Сайты и лендинги: структура страницы, тексты, адаптив, часто сборка в конструкторе. Много фриланса.</td><td>нравится и визуал, и смысл; хочется видеть готовый результат быстро; не пугает общение с заказчиками</td><td>не хочешь продавать и разговаривать с клиентами; не любишь работать с чужими текстами</td></tr>
+<tr><td><b>Графический</b></td><td>Логотипы, фирменный стиль, упаковка, реклама, соцсети, печать.</td><td>тянет к шрифтам, формам, цвету, образам; нравится искать идею и выражать её визуально</td><td>не выносишь, когда заказчик говорит «не нравится» без объяснений; не хочешь возиться с техникой печати</td></tr>
+<tr><td><b>Моушн</b></td><td>Анимация, ролики, анимированные логотипы и интерфейсы.</td><td>чувствуешь ритм и время, нравится монтаж и движение</td><td>нет терпения к долгому рендеру и покадровой работе</td></tr>
+</tbody></table></div>
+<p>Базу (композиция, шрифт, цвет, сетки) учат все, так что первые месяцы ты ничего не теряешь, даже если пока не выбрала.</p>
+
+<div class="demo" id="demo-jobs">
+  <div class="demo-title">Угадай направление по задаче</div>
+  <p class="demo-sub">Кто скорее всего получит такую задачу?</p>
+  <div id="jobs-quiz"></div>
+</div>
+</section>
+
+<section class="topic" id="t-process">
+<h3>Как идёт проект</h3>
+<p>Почти любой проект проходит одни и те же шаги. Сначала понять задачу, потом искать варианты, потом выбрать один и довести. Каждый шаг заканчивается согласованием, чтобы не переделывать всё в конце.</p>
+<ol>
+  <li><b>Бриф.</b> Записать задачу: цель, аудитория, что на выходе, сроки, бюджет, ограничения, примеры «нравится / не нравится» и критерий успеха.</li>
+  <li><b>Погружение.</b> Изучить продукт, людей, конкурентов.</li>
+  <li><b>Референсы и идея.</b> Собрать примеры, договориться о направлении.</li>
+  <li><b>Эскизы.</b> Быстро и грубо, много вариантов: на бумаге или серыми блоками.</li>
+  <li><b>Макет.</b> Детально проработать выбранный вариант.</li>
+  <li><b>Показ, правки, сдача.</b> Объяснить решение, записать правки списком, отдать файлы.</li>
+</ol>
+<p>Главная ошибка новичков — сразу открыть Figma и полировать. Поэтому в каждой пробе ниже первый шаг — эскизы на бумаге.</p>
+
+<div class="practice" data-ch="T"><span class="label">Практика этапа 1</span>
+  <label><input type="checkbox" data-k="1a"> Возьми два приложения, которыми пользуешься каждый день. Для главного экрана каждого ответь на три вопроса: задача, аудитория, результат.</label>
+  <label><input type="checkbox" data-k="1b"> Открой по 5 вакансий джуниора на интерфейсы, веб и графику. Выпиши, что повторяется. Отметь, какие обязанности тебя радуют, а какие пугают.</label>
+  <label><input type="checkbox" data-k="1c"> Пройди тест «Угадай направление».</label>
+  <label><input type="checkbox" data-k="1d"> Заполни в дневнике внизу страницы блок «Этап 1». Это 5 минут, но потом он очень поможет.</label>
+</div>
+</section>
+</section>
+
+<!-- ЭТАП 2 -->
+<section class="chapter" id="t-s2">
+<div class="chapter-num">ЭТАП 2</div>
+<h2>Первый навык: композиция</h2>
+<p>Композиция — это расположение элементов. Хорошая композиция без единого слова говорит, что с чем связано и что главное. Это самый базовый навык во всех направлениях, и по нему лучше всего понятно, нравится ли тебе дизайнерская работа: большая её часть — двигать элементы и сравнивать варианты.</p>
+
+<section class="topic" id="t-comp">
+<h3>Пять правил за вечер</h3>
+
+<h4>1. Близость</h4>
+<div class="rule"><small>ПРАВИЛО</small>Что стоит рядом, воспринимается как группа. Расстояние внутри группы должно быть заметно меньше, чем между группами, хотя бы в полтора-два раза.</div>
+<p><b>Почему:</b> мозг группирует близкие элементы автоматически, ещё до того, как человек начал думать. Это самый простой способ навести порядок: не нужны ни рамки, ни цвет.</p>
+<div class="demo">
+  <div class="demo-title">Подпись к какому полю?</div>
+  <p class="demo-sub">Двигай отступы и смотри, когда подпись «Почта» начинает казаться частью верхнего поля.</p>
+  <div class="stage" style="display:flex;justify-content:center">
+    <div class="mini-form" id="prox-form">
+      <div class="lbl">Имя</div><div class="inp" data-r="in"></div>
+      <div class="lbl" data-r="out">Почта</div><div class="inp" data-r="in"></div>
+      <div class="lbl" data-r="out">Телефон</div><div class="inp" data-r="in"></div>
+    </div>
+  </div>
+  <div class="controls">
+    <label>Подпись → поле <input type="range" id="prox-in" min="2" max="40" value="20"> <span class="mono" id="prox-in-v"></span></label>
+    <label>Между группами <input type="range" id="prox-out" min="4" max="48" value="12"> <span class="mono" id="prox-out-v"></span></label>
+  </div>
+  <div class="verdict" id="prox-v"></div>
+</div>
+
+<h4>2. Сходство</h4>
+<div class="rule"><small>ПРАВИЛО</small>Похожее по цвету, форме и размеру читается как одна категория. Одинаковое по смыслу должно выглядеть одинаково, разное — по-разному.</div>
+<p><b>Почему:</b> похожесть — сигнал «это одного рода». Если ссылка выглядит как обычный текст, её не найдут. Если обычный текст выделить цветом, на него будут нажимать.</p>
+
+<h4>3. Баланс</h4>
+<div class="rule"><small>ПРАВИЛО</small>У каждого элемента есть визуальный вес. Композиция не должна заваливаться в одну сторону без причины.</div>
+<p><b>Почему:</b> тяжелее кажется то, что крупнее, темнее, ярче, детальнее и стоит в одиночестве. Работает как качели: большой элемент близко к центру уравновешивается маленьким, но тёмным у края. Симметрия даёт спокойствие и торжественность, уравновешенная асимметрия — движение. Ещё одна деталь: объект ровно в геометрическом центре кажется опущенным, поэтому главное ставят чуть выше середины.</p>
+
+<h4>4. Пустое пространство</h4>
+<div class="rule"><small>ПРАВИЛО</small>Пустота — такой же элемент, как текст и картинки. Её распределяют по важности: меньше внутри групп, больше между ними, больше всего вокруг главного.</div>
+<p><b>Почему:</b> пустота группирует (это та же близость) и выделяет: элемент с большим полем вокруг становится главным. Плохо не «мало воздуха» или «много воздуха», а воздух, распределённый одинаково.</p>
+<div class="demo">
+  <div class="demo-title">Карточка товара</div>
+  <p class="demo-sub">Двигай количество воздуха и переключай способ распределения.</p>
+  <div class="stage" style="display:flex;justify-content:center">
+    <div class="pcard" id="pcard">
+      <div class="img"></div>
+      <div class="ttl">Керамическая кружка, 350 мл</div>
+      <div class="meta">Ручная работа, серая глазурь</div>
+      <div class="price">1 290 ₽</div>
+      <div class="buy">В корзину</div>
+    </div>
+  </div>
+  <div class="controls">
+    <label>Воздух <input type="range" id="sp-k" min="0" max="100" value="55"></label>
+    <label><input type="checkbox" id="sp-h" checked> Отступы по иерархии</label>
+  </div>
+  <div class="verdict" id="sp-v"></div>
+</div>
+
+<h4>5. Единый язык форм</h4>
+<div class="rule"><small>ПРАВИЛО</small>Одна роль — одно скругление. Если скруглённый элемент лежит внутри другого, его радиус = внешний радиус − отступ.</div>
+<p><b>Почему:</b> разные радиусы без системы выглядят как детали из разных продуктов. А одинаковый радиус снаружи и внутри даёт в углах зазор толще, чем по сторонам.</p>
+<div class="demo">
+  <div class="demo-title">Вложенные скругления</div>
+  <div class="stage" style="display:flex;justify-content:center;padding:28px"><div class="nest" id="nest"><div class="nest-in" id="nest-in"></div></div></div>
+  <div class="controls">
+    <label>Внешний радиус <input type="range" id="n-r" min="0" max="48" value="32"> <span class="mono" id="n-r-v"></span></label>
+    <label>Отступ <input type="range" id="n-p" min="4" max="32" value="12"> <span class="mono" id="n-p-v"></span></label>
+    <label><input type="checkbox" id="n-c"> Внутренний = внешний − отступ</label>
+  </div>
+  <div class="verdict" id="n-v"></div>
+</div>
+
+<div class="figma"><span class="label">Эксперименты в Figma (выбери два)</span>
+<ol>
+  <li><b>Форма.</b> Три пары «подпись + поле» на Auto Layout. Сначала все отступы 4, потом между парами 24. Посмотри, как появляются группы.</li>
+  <li><b>Проверка размытием.</b> Выдели фрейм, добавь эффект Layer blur 6–8. Детали пропадут, останутся пятна. Если пятна совпадают с задуманными группами, всё работает. Потом выключи эффект.</li>
+  <li><b>Баланс.</b> Фрейм 1080×1350, большой тёмный круг внизу слева. Уравновесь его маленьким тёмным элементом справа сверху.</li>
+  <li><b>Скругления.</b> Карточка с радиусом 24 и отступом 12, внутри картинка с радиусом 24. Посмотри на углы и поменяй внутренний на 12.</li>
+</ol>
+</div>
+</section>
+
+<section class="topic" id="t-poster">
+<h3>Мини-работа: афиша</h3>
+<p>Афиша вымышленного события: лекция, выставка, концерт, мастер-класс. Формат 1080×1350. Содержимое: название, одна строка описания, дата и время, место, цена или «вход свободный», одна фигура.</p>
+<div class="practice" data-ch="T"><span class="label">Сделать и проверить</span>
+  <label><input type="checkbox" data-k="2a"> Сделала два эксперимента в Figma.</label>
+  <label><input type="checkbox" data-k="2b"> Сделала афишу. Дата, время и место стоят группой, название отдельно.</label>
+  <label><input type="checkbox" data-k="2c"> Проверила размытием: группы читаются.</label>
+  <label><input type="checkbox" data-k="2d"> Показала кому-нибудь на 5 секунд: человек назвал событие и дату.</label>
+  <label><input type="checkbox" data-k="2e"> Заполнила в дневнике блок «Этап 2».</label>
+</div>
+</section>
+</section>
+
+<!-- ЭТАП 3 -->
+<section class="chapter" id="t-s3">
+<div class="chapter-num">ЭТАП 3</div>
+<h2>Три пробы</h2>
+<p>Каждая проба — маленькая настоящая задача из своего направления, на 3–5 часов. Делай в любом порядке. После каждой сразу заполняй дневник, пока ощущения свежие: через неделю они смешаются.</p>
+<p>Во всех трёх пробах одно общее правило: <b>сначала 15–20 минут эскизов на бумаге</b>, маленьких, размером со спичечный коробок. Потом выбираешь лучший и только тогда открываешь Figma.</p>
+
+<!-- А -->
+<section class="topic" id="t-ui">
+<h3>Проба А. Интерфейс: запись к мастеру</h3>
+<div class="box">
+<b>Бриф.</b> Мастер маникюра работает одна, записи сейчас принимает в мессенджере и путается. Нужен простой сценарий записи с телефона. Клиентки — женщины 20–45 лет, записываются между делом, часто одной рукой. <b>Результат:</b> человек записывается за минуту и не сомневается, что запись прошла. <b>На выходе:</b> три экрана.
+</div>
+
+<h4>Что нужно знать для этой пробы</h4>
+<ul>
+  <li><b>Размер касания.</b> Всё, на что нажимают пальцем, должно быть не меньше 44 пунктов по рекомендации Apple или 48 по рекомендации Google. Мелкие кнопки — частая причина ошибок.</li>
+  <li><b>Одно главное действие на экране.</b> Одна заметная кнопка («Далее», «Записаться»), остальное тише. Главную кнопку обычно ставят внизу, там, куда достаёт большой палец.</li>
+  <li><b>Состояния.</b> Интерфейс — это не одна картинка. У времени записи есть состояния «свободно», «выбрано», «занято». Каждое должно выглядеть по-своему, причём не только цветом: занятое ещё и зачёркнуто или бледное.</li>
+  <li><b>Текст.</b> Основной текст на телефоне обычно не меньше 16 пикселей. Подписи можно 13–14, но не мельче.</li>
+  <li><b>Человек должен понимать, где он.</b> Заголовок экрана и способ вернуться назад.</li>
+</ul>
+
+<h4>Экраны</h4>
+<ol>
+  <li><b>Выбор услуги.</b> Список: «Маникюр без покрытия — 40 мин, 900 ₽», «Маникюр с покрытием гель-лак — 1 ч 30 мин, 1 800 ₽», «Снятие покрытия — 20 мин, 300 ₽», «Дизайн одного ногтя — 100 ₽». Выбранная услуга отмечена, кнопка «Выбрать время».</li>
+  <li><b>Выбор времени.</b> Дни недели в ряд, под ними слоты времени: 10:00, 11:30, 13:00, 14:30, 16:00, 17:30, часть занята. Сверху напоминание, какая услуга выбрана. Кнопка «Записаться».</li>
+  <li><b>Подтверждение.</b> «Вы записаны»: услуга, дата, время, адрес, цена. Действия: «Добавить в календарь», «Перенести или отменить».</li>
+</ol>
+
+<h4>Шаги</h4>
+<ol>
+  <li>Эскизы на бумаге: по 3 варианта каждого экрана.</li>
+  <li>В Figma фреймы размера iPhone (около 390×844). Сначала серыми блоками без цвета и шрифтов: только где что стоит.</li>
+  <li>Наполни реальным текстом из списка выше. Проверь близость: цена и длительность рядом со своей услугой, а не посередине между двумя.</li>
+  <li>Один акцентный цвет, только для главной кнопки и выбранного состояния.</li>
+  <li>Свяжи экраны в простой прототип: режим Prototype, протяни связь от кнопки к следующему экрану, запусти просмотр.</li>
+  <li>Дай телефон с прототипом кому-нибудь и скажи: «запишись на маникюр с покрытием в четверг». Молчи и смотри, где человек замешкается.</li>
+</ol>
+
+<div class="note">Что заметить про себя: тебе было интересно думать, где человек ошибётся? Захотелось продумать, что будет, если всё время занято? Или это показалось скучной логистикой?</div>
+
+<div class="practice" data-ch="T"><span class="label">Чек-лист пробы А</span>
+  <label><input type="checkbox" data-k="aA1"> Эскизы на бумаге, по 3 варианта на экран</label>
+  <label><input type="checkbox" data-k="aA2"> Три экрана в Figma с реальным текстом</label>
+  <label><input type="checkbox" data-k="aA3"> Все кнопки и слоты не меньше 44 в высоту</label>
+  <label><input type="checkbox" data-k="aA4"> Занятое время отличается не только цветом</label>
+  <label><input type="checkbox" data-k="aA5"> Прототип проверен на одном человеке</label>
+  <label><input type="checkbox" data-k="aA6"> Дневник пробы А заполнен</label>
+</div>
+</section>
+
+<!-- Б -->
+<section class="topic" id="t-gr">
+<h3>Проба Б. Графика: обложка книги</h3>
+<div class="box">
+<b>Бриф.</b> Издательство переиздаёт повесть Гоголя «Шинель» в серии классики для подростков. Нужна обложка, которая выглядит современно и не похожа на школьный учебник. <b>Ограничения:</b> только шрифт и простые геометрические фигуры, максимум два цвета плюс чёрный или белый. Без фото и иллюстраций. <b>На выходе:</b> обложка 1400×2100 (пропорция 2:3).
+</div>
+
+<h4>Что нужно знать для этой пробы</h4>
+<ul>
+  <li><b>Идея важнее украшений.</b> Сначала придумай, о чём обложка, одним образом. «Шинель» — про маленького человека, одиночество, мечту о вещи, равнодушный город, холод. Выбери одно и подумай, как это показать формой: маленький элемент в огромном пустом поле, фигура, которую «раздели», слово, которое не помещается.</li>
+  <li><b>Шрифт как изображение.</b> Название можно сделать главным образом обложки: огромным, обрезанным краем, повёрнутым, разбитым на части. Но оно всё равно должно читаться.</li>
+  <li><b>Ограничение помогает.</b> Два цвета заставляют решать композицией и контрастом размера, а не эффектами.</li>
+  <li><b>Контраст размера.</b> Если главное большое, то большое по-настоящему. Разница 1,2 раза выглядит как ошибка, 3–5 раз — как решение.</li>
+  <li><b>Обложку смотрят маленькой.</b> В интернет-магазине она размером с почтовую марку. Проверь, что идея читается и в превью.</li>
+</ul>
+
+<h4>Шаги</h4>
+<ol>
+  <li>Выпиши 5–7 слов-ассоциаций к повести и выбери одну.</li>
+  <li>10 эскизов-миниатюр на бумаге за 20 минут. Количество важнее качества.</li>
+  <li>Выбери два самых разных эскиза и сделай оба в Figma.</li>
+  <li>Подбери шрифты: один для названия, один для автора и серии. Google Fonts с кириллицей подойдут.</li>
+  <li>Уменьши обе обложки до 140 пикселей по ширине и сравни, какая работает в маленьком размере.</li>
+  <li>Спроси кого-нибудь, что он почувствовал, глядя на обложку, не объясняя свою идею. Совпало?</li>
+</ol>
+
+<div class="note">Что заметить про себя: тебя увлёк поиск идеи? Хотелось перебирать шрифты и пропорции снова и снова? Или без чёткого «правильного ответа» было неуютно?</div>
+
+<div class="practice" data-ch="T"><span class="label">Чек-лист пробы Б</span>
+  <label><input type="checkbox" data-k="aB1"> Слова-ассоциации и 10 эскизов</label>
+  <label><input type="checkbox" data-k="aB2"> Две разные обложки в Figma</label>
+  <label><input type="checkbox" data-k="aB3"> Ограничения соблюдены: шрифт, геометрия, максимум два цвета</label>
+  <label><input type="checkbox" data-k="aB4"> Проверила в маленьком размере</label>
+  <label><input type="checkbox" data-k="aB5"> Спросила, что почувствовал другой человек</label>
+  <label><input type="checkbox" data-k="aB6"> Дневник пробы Б заполнен</label>
+</div>
+</section>
+
+<!-- В -->
+<section class="topic" id="t-web">
+<h3>Проба В. Веб: первый экран лендинга</h3>
+<div class="box">
+<b>Бриф.</b> Та же мастер маникюра хочет простой сайт, чтобы давать ссылку в соцсетях. Нужен первый экран: то, что человек видит до прокрутки. <b>Результат:</b> за 5 секунд понятно, кто это, где, сколько стоит примерно и как записаться. <b>На выходе:</b> первый экран для компьютера (1440 в ширину) и для телефона (около 390).
+</div>
+
+<h4>Что нужно знать для этой пробы</h4>
+<ul>
+  <li><b>Первый экран отвечает на вопрос «мне сюда?».</b> Заголовок говорит, что это и для кого, а не «Добро пожаловать». Плохо: «Красота начинается здесь». Хорошо: «Маникюр в центре города, запись онлайн».</li>
+  <li><b>Одна главная кнопка</b> с понятным действием: «Записаться», а не «Подробнее».</li>
+  <li><b>Подкрепление доверия:</b> 1–2 факта рядом с заголовком (опыт, стерилизация инструментов, цена «от 900 ₽»).</li>
+  <li><b>Адаптив.</b> На телефоне блоки встают в столбик, заголовок становится меньше, кнопка — шириной почти во весь экран. Это не уменьшенная копия, а перестроенная.</li>
+  <li><b>Текст тоже делаешь ты.</b> В веб-дизайне часто приходится самой формулировать заголовки. Это нормальная часть работы.</li>
+</ul>
+
+<h4>Шаги</h4>
+<ol>
+  <li>Напиши 5 вариантов заголовка и выбери лучший.</li>
+  <li>Эскизы на бумаге: 3 варианта для компьютера.</li>
+  <li>Собери в Figma версию 1440 в ширину: меню (логотип-текст, 3 пункта, кнопка), заголовок, подзаголовок, кнопка, 2–3 факта, место под фото (серый прямоугольник с подписью «фото работ»).</li>
+  <li>Перестрой для телефона. Сохрани порядок важности, а не расположение.</li>
+  <li>Пятисекундный тест: покажи и спроси, что это и как записаться.</li>
+</ol>
+
+<div class="note">Что заметить про себя: было интересно придумывать текст и думать, как убедить человека? Понравилось, что результат быстро выглядит как готовый сайт? Или хотелось глубже в логику (как в пробе А) или в образ (как в пробе Б)?</div>
+
+<div class="practice" data-ch="T"><span class="label">Чек-лист пробы В</span>
+  <label><input type="checkbox" data-k="aC1"> 5 вариантов заголовка и эскизы</label>
+  <label><input type="checkbox" data-k="aC2"> Первый экран для компьютера</label>
+  <label><input type="checkbox" data-k="aC3"> Перестроенная версия для телефона</label>
+  <label><input type="checkbox" data-k="aC4"> Пятисекундный тест на одном человеке</label>
+  <label><input type="checkbox" data-k="aC5"> Дневник пробы В заполнен</label>
+</div>
+</section>
+</section>
+
+<!-- ДНЕВНИК -->
+<section class="chapter" id="t-diary">
+<div class="chapter-num">РЕШЕНИЕ</div>
+<h2>Дневник и итог</h2>
+<p>Оценивай не результат, а процесс: как тебе было. Ставь честно, никто кроме тебя не увидит. Всё сохраняется в этом браузере.</p>
+<div id="diary"></div>
+<div class="demo">
+  <div class="demo-title">Итог</div>
+  <div id="sum"></div>
+  <div class="controls"><button class="btn" id="copy">Скопировать итоги, чтобы прислать мне</button><span class="mono" id="copy-st"></span></div>
+  <textarea id="copy-area" aria-label="Текст итогов" style="display:none;width:100%;min-height:160px;margin-top:10px;font:14px var(--f-mono);background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px"></textarea>
+</div>
+
+<h4>Как читать итог</h4>
+<ul>
+  <li><b>Одна проба заметно выше других</b> — хороший кандидат в направление. Дальше полный курс с упором на него.</li>
+  <li><b>Все пробы примерно одинаково высоко</b> — нравится сам дизайн. Начни с UX/UI или веба: там больше вакансий для начинающих, а графику можно оставить как вторую линию.</li>
+  <li><b>Везде средне</b> — сделай ещё одну пробу в том направлении, где было интереснее, причём другую задачу. Иногда мешает сама задача, а не направление.</li>
+  <li><b>Везде низко, тянуло бросить</b> — это тоже ценный ответ, и он стоил всего пары недель, а не 20 000 ₽ за курс. Подумай, что было неприятно: если сидеть за компьютером и вылизывать детали, то, может, тебе ближе что-то рядом с дизайном, например фото, контент или управление проектами.</li>
+</ul>
+<p class="note">Итог — подсказка для размышления, а не тест. Формулу я придумала сама. Пришли мне результаты и работы, разберём вместе и решим, что дальше.</p>
+</section>
+
+<footer>Теория написана мной на основе общепринятой базы. Рекомендации по размеру касания (44 у Apple, 48 у Google) я указала по памяти и сегодня не перепроверяла. Ссылок на внешние материалы на странице нет намеренно.</footer>
+</main>
+</div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const P='dzt-';
+
+function updProg(){const b=$$('.practice input'),d=b.filter(x=>x.checked).length;$('#progT').textContent=`Сделано: ${d} из ${b.length}`}
+$$('.practice input').forEach(b=>{b.checked=store.get(P+b.dataset.k)==='1';b.addEventListener('change',()=>{store.set(P+b.dataset.k,b.checked?'1':'0');updProg()})});
+updProg();
+
+/* квиз направлений */
+(function(){
+  const R=['UX/UI или продукт','Веб-дизайн','Графика','Моушн'];
+  const Q=[
+    ['Пользователи бросают оформление заказа на шаге с адресом. Нужно понять почему и переделать шаг.',0,'Разобраться в причине, переделать сценарий, проверить на людях: это интерфейсы.'],
+    ['Упаковка для новой линейки печенья, три вкуса.',2,'Упаковка — классическая графика: стиль, печать, вид на полке.'],
+    ['Лендинг для курсов английского, чтобы оставляли заявки. Собрать в конструкторе.',1,'Сайт под заявки и сборка в конструкторе — типичная задача веб-дизайнера.'],
+    ['Анимированная заставка из логотипа для видео.',3,'Движение и тайминг — моушн.'],
+    ['Добавить в банковское приложение тёмную тему и проверить все экраны.',0,'Компоненты, стили и состояния интерфейса — UI.'],
+    ['Логотип и фирменный стиль для студии йоги.',2,'Логотип и стиль — графика. Потом сайт может сделать тот же человек или веб-дизайнер: границы размыты.']
+  ];
+  const box=$('#jobs-quiz');
+  box.innerHTML=Q.map((q,i)=>`<div class="quiz-item"><div>${i+1}. ${q[0]}</div><div class="opts">${R.map((r,j)=>`<button class="opt" data-i="${i}" data-j="${j}">${r}</button>`).join('')}</div><div class="explain" id="jq${i}"></div></div>`).join('')+`<div class="verdict mid" id="jq-s">Отвечено 0 из ${Q.length}</div>`;
+  let n=0,r=0;
+  box.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i,j=+b.dataset.j,row=b.parentElement;if(row.dataset.done)return;row.dataset.done=1;n++;
+    row.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(+x.dataset.j===Q[i][1])x.classList.add('right')});
+    if(j===Q[i][1])r++;else b.classList.add('wrong');
+    $('#jq'+i).textContent=Q[i][2];$('#jq-s').textContent=`Отвечено ${n} из ${Q.length}, верно ${r}`;
+  });
+})();
+
+/* близость */
+(function(){
+  const f=$('#prox-form'),i=$('#prox-in'),o=$('#prox-out');
+  function upd(){const a=+i.value,b=+o.value;$('#prox-in-v').textContent=a+' px';$('#prox-out-v').textContent=b+' px';
+    f.querySelectorAll('[data-r="in"]').forEach(e=>e.style.marginTop=a+'px');f.querySelectorAll('[data-r="out"]').forEach(e=>e.style.marginTop=b+'px');
+    const v=$('#prox-v'),r=b/a;
+    if(r<1.15){v.className='verdict bad';v.textContent='Плохо. Подпись «Почта» стоит к верхнему полю так же близко или ближе, чем к своему.'}
+    else if(r<1.8){v.className='verdict mid';v.textContent='Слабо. Разница есть, но её надо высматривать.'}
+    else{v.className='verdict good';v.textContent=`Хорошо. Между группами в ${r.toFixed(1)} раза больше, чем внутри. Пары читаются сразу.`}}
+  i.oninput=o.oninput=upd;upd();
+})();
+
+/* воздух */
+(function(){
+  const c=$('#pcard'),k=$('#sp-k'),h=$('#sp-h');
+  function upd(){const t=+k.value/100,pad=Math.round(4+t*20);c.style.padding=pad+'px';
+    let g;if(h.checked){const b=2+t*6;g=[pad,b*.6,b*2.4,b*3]}else{const x=Math.round(4+t*20);g=[x,x,x,x]}
+    [...c.children].forEach((e,i)=>e.style.marginTop=i?Math.round(g[i-1])+'px':'0');
+    const v=$('#sp-v');
+    if(t<.2){v.className='verdict bad';v.textContent='Тесно: текст прижат к краям, всё сливается.'}
+    else if(!h.checked){v.className='verdict mid';v.textContent='Воздух есть, но распределён одинаково, и непонятно, что с чем связано.'}
+    else if(t>.9){v.className='verdict mid';v.textContent='Воздуха много. Для одной карточки хорошо, для каталога на 40 товаров — слишком много прокрутки.'}
+    else{v.className='verdict good';v.textContent='Хорошо: название и описание вместе, цена отдельно, кнопка ещё отдельнее.'}}
+  k.oninput=h.onchange=upd;upd();
+})();
+
+/* скругления */
+(function(){
+  const n=$('#nest'),ni=$('#nest-in'),r=$('#n-r'),p=$('#n-p'),c=$('#n-c');
+  function upd(){const R=+r.value,Pd=+p.value,inner=c.checked?Math.max(R-Pd,0):R;$('#n-r-v').textContent=R;$('#n-p-v').textContent=Pd;
+    n.style.borderRadius=R+'px';n.style.padding=Pd+'px';ni.style.borderRadius=inner+'px';const v=$('#n-v');
+    if(c.checked||R===0||inner===R-Pd){v.className='verdict good';v.textContent=`Внутренний радиус ${inner}. Зазор в углах такой же, как по сторонам.`}
+    else{v.className='verdict bad';v.textContent=`Внутренний радиус ${inner}, как у внешнего. В углах зазор толще. Нужно ${Math.max(R-Pd,0)}.`}}
+  [r,p].forEach(e=>e.oninput=upd);c.onchange=upd;upd();
+})();
+
+/* дневник */
+const QS=['Было интересно','Забывала про время','Хотелось переделать и улучшить','Нравится, что получилось','Хочу ещё такую задачу'];
+const BLOCKS=[
+  {id:'s1',t:'Этап 1. Знакомство',q:['Было интересно читать и разбираться','Хочется попробовать руками']},
+  {id:'s2',t:'Этап 2. Композиция и афиша',q:QS},
+  {id:'A',t:'Проба А. Интерфейс',q:QS,probe:'Интерфейсы (UX/UI)'},
+  {id:'B',t:'Проба Б. Графика',q:QS,probe:'Графика'},
+  {id:'C',t:'Проба В. Веб',q:QS,probe:'Веб-дизайн'}
+];
+const D=$('#diary');
+D.innerHTML=BLOCKS.map(b=>`<div class="demo"><div class="demo-title">${b.t}</div>
+  ${b.q.map((q,i)=>{const id=`d-${b.id}-${i}`;return `<div class="controls" style="margin:6px 0"><label for="${id}" style="min-width:250px">${q}</label><input type="range" id="${id}" min="0" max="5" step="1" value="0" style="accent-color:var(--accent)"> <span class="mono" id="${id}-v"></span></div>`}).join('')}
+  <label for="d-${b.id}-note" class="label" style="margin-top:12px">Что понравилось, что раздражало</label>
+  <textarea id="d-${b.id}-note" style="width:100%;min-height:70px;font:15px var(--f-body);background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 10px"></textarea></div>`).join('');
+const words=['не оценено','совсем нет','скорее нет','так себе','скорее да','очень'];
+BLOCKS.forEach(b=>{b.q.forEach((q,i)=>{const id=`d-${b.id}-${i}`,el=$('#'+id);const sv=store.get(P+id);if(sv!==null)el.value=sv;
+  const show=()=>{$('#'+id+'-v').textContent=el.value==='0'?'—':el.value+' · '+words[+el.value]};show();
+  el.oninput=()=>{store.set(P+id,el.value);show();summary()}});
+  const nt=$(`#d-${b.id}-note`);nt.value=store.get(P+'n-'+b.id)||'';nt.oninput=()=>store.set(P+'n-'+b.id,nt.value)});
+
+function avg(b){const v=b.q.map((q,i)=>+$(`#d-${b.id}-${i}`).value).filter(x=>x>0);return v.length===b.q.length?v.reduce((a,c)=>a+c,0)/v.length:null}
+function summary(){
+  const pr=BLOCKS.filter(b=>b.probe).map(b=>({n:b.probe,v:avg(b)}));
+  const done=pr.filter(p=>p.v!==null);
+  let html=pr.map(p=>`<div style="display:grid;grid-template-columns:170px 1fr 48px;gap:10px;align-items:center;margin:8px 0;font-size:15px"><span>${p.n}</span><div style="height:12px;background:var(--demo);border-radius:6px;overflow:hidden"><div style="height:100%;width:${p.v?p.v/5*100:0}%;background:var(--accent);border-radius:6px"></div></div><span class="mono">${p.v?p.v.toFixed(1):'—'}</span></div>`).join('');
+  let t;
+  if(done.length<3)t=`Оценены пробы: ${done.length} из 3. Итог появится, когда заполнишь все оценки по трём пробам.`;
+  else{
+    const s=[...done].sort((a,b)=>b.v-a.v),top=s[0],gap=top.v-s[1].v,mean=done.reduce((a,c)=>a+c.v,0)/3;
+    if(mean<2.3)t='Везде низко. Это честный и ценный ответ: возможно, дизайн как ежедневная работа не твоё. Посмотри в заметках, что именно было неприятно.';
+    else if(gap>=0.8)t=`Заметно выделяется: ${top.n}. Хороший кандидат в направление.`;
+    else if(mean>=3.6)t=`Нравится примерно всё, чуть выше: ${top.n}. Похоже, тебя тянет к дизайну в целом.`;
+    else t=`Явного лидера нет, чуть выше: ${top.n}. Попробуй там ещё одну, другую задачу.`;
+  }
+  $('#sum').innerHTML=html+`<div class="verdict mid">${t}</div>`;
+  return {pr,t};
+}
+summary();
+
+$('#copy').onclick=()=>{
+  const {t}=summary();
+  const lines=['Итоги пробного маршрута'];
+  BLOCKS.forEach(b=>{lines.push('',b.t);b.q.forEach((q,i)=>{const v=$(`#d-${b.id}-${i}`).value;lines.push(`- ${q}: ${v==='0'?'не оценено':v+' из 5'}`)});const n=$(`#d-${b.id}-note`).value.trim();if(n)lines.push('Заметки: '+n)});
+  lines.push('','Вывод страницы: '+t);
+  const txt=lines.join('\n'),ta=$('#copy-area');ta.value=txt;
+  const ok=()=>{$('#copy-st').textContent='Скопировано, вставь в чат'};
+  const fail=()=>{ta.style.display='block';ta.focus();ta.select();$('#copy-st').textContent='Скопируй текст из поля ниже'};
+  try{navigator.clipboard.writeText(txt).then(ok,fail)}catch(e){fail()}
+};
+
+</script>
+</body>
+</html>
